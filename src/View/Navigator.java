@@ -5,7 +5,7 @@ import Utils.Terminal;
 
 import java.util.ArrayList;
 
-public class Navigator<T> {
+public class Navigator<T> implements INavigator{
     private ArrayList<T> strings;
     private final StringBuilder builder;
     private int pageSize;

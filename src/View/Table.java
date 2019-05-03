@@ -4,7 +4,7 @@ import Utils.StringBetter;
 
 import java.util.ArrayList;
 
-public class Table<T> {
+public class Table<T> implements ITable{
     private final ArrayList<String> linLabl;
     private final ArrayList<String> colLabl;
     private final ArrayList<ArrayList<T>> iT;

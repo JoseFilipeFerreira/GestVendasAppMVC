@@ -3,16 +3,15 @@ package View;
 import Utils.StringBetter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Stack;
 
-public class Menu {
+public class Menu implements IMenu{
     MenuInd menu;
     Stack<MenuInd> prev;
     ArrayList<MenuInd> options;
     String menuString;
 
-    private enum MenuInd {
+    public enum MenuInd {
         Initial,
         Static,
         Dynamic,

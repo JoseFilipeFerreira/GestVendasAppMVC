@@ -1,6 +1,6 @@
 package Utils;
 
-public class StringBetter {
+public class StringBetter implements IStringBetter{
     private String str;
 
     public StringBetter(String str) {
