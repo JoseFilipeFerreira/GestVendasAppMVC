@@ -1,3 +1,5 @@
+package Utils;
+
 public class StringBetter {
     private String str;
 
@@ -14,10 +16,20 @@ public class StringBetter {
     }
 
     public StringBetter repeate(int n){
-        String s = new String();
+        String s = "";
         for(int i = 0; i < n; i++)
             s += this.str;
         return new StringBetter(s);
+    }
+
+    public StringBetter append(String strA){
+        this.str += strA;
+        return this;
+    }
+
+    public StringBetter append(StringBetter strA){
+        this.str += strA.str;
+        return this;
     }
 
     public StringBetter black() {

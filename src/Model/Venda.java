@@ -1,3 +1,5 @@
+package Model;
+
 public class Venda implements IVenda{
     private String codCli;
     private String codProd;

@@ -1,3 +1,5 @@
+package Model;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,60 +11,60 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.System.*;
+import static java.lang.System.out;
 
-public class CatProds implements ICatProds{
-    private Map<String, IProduct> catProds;
+public class CatCli implements ICatCli {
+    private Map<String, IClient> catCli;
 
-    public CatProds() {
-        this.catProds = new HashMap<>();
+    public CatCli() {
+        this.catCli = new HashMap<>();
     }
 
-    public CatProds(String fp) {
-        List<String> produtos = new ArrayList<>();
+    public CatCli(String fp) {
+        List<String> clients = new ArrayList<>();
         try {
-            produtos = Files.readAllLines(Paths.get(fp), StandardCharsets.UTF_8);
+            clients = Files.readAllLines(Paths.get(fp), StandardCharsets.UTF_8);
         }
         catch(IOException e) {
             out.println(e);
         }
-        this.catProds = produtos
+        this.catCli = clients
                 .stream()
-                .map(Product::new)
+                .map(Client::new)
                 .collect(Collectors
-                        .toMap(IProduct::getId, Function.identity()));
+                        .toMap(IClient::getId, Function.identity()));
     }
 
-    public boolean exists(IProduct p) {
+    public boolean exists(IClient p) {
         return this
-                .catProds
+                .catCli
                 .containsKey(p.getId());
     }
 
     public boolean exists(String p) {
         return this
-                .catProds
+                .catCli
                 .containsKey(p);
     }
 
-    public void add(IProduct p) {
+    public void add(IClient p) {
         this
-                .catProds
+                .catCli
                 .put(p.getId(), p);
     }
 
     public int howMany() {
         return this
-                .catProds
+                .catCli
                 .size();
     }
 
-    public List<IProduct> productList() {
+    public List<IClient> clientList() {
         return this
-                .catProds
+                .catCli
                 .values()
                 .stream()
-                .map(IProduct::clone)
+                .map(IClient::clone)
                 .collect(Collectors.toList());
     }
 }

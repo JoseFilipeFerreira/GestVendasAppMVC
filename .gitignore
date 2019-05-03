@@ -31,3 +31,4 @@ Report.*
 !Report.tex
 tests/
 db/*
+META-INF/

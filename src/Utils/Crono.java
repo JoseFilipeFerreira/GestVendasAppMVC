@@ -1,4 +1,4 @@
-/*
+package Utils;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -9,7 +9,7 @@
  * @author asus
  */
 /**
- * Crono = mede um tempo entre start() e stop()
+ * Utils.Crono = mede um tempo entre start() e stop()
  * O tempo e medido em nanosegundos e convertido para 
  *  um double que representa os segs na sua parte inteira.
  * 

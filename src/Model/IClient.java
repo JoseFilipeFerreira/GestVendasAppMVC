@@ -1,3 +1,5 @@
+package Model;
+
 public interface IClient {
     boolean verifyClient();
 

@@ -1,3 +1,5 @@
+package Model;
+
 public class Product implements IProduct{
     private String id;
 

@@ -1,3 +1,5 @@
+package Model;
+
 public interface IProduct {
     public boolean verifyProduct();
 

@@ -1,6 +1,8 @@
-import java.util.ArrayList;
+package View;
 
-import static java.lang.System.out;
+import Utils.StringBetter;
+
+import java.util.ArrayList;
 
 public class Table<T> {
     private final ArrayList<String> linLabl;
