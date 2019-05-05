@@ -4,6 +4,8 @@ public interface IMenu {
 
     enum MenuInd{}
 
+    boolean getRun();
+
     Menu parser(String str);
 
     Menu selectOption(int i);

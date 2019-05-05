@@ -17,6 +17,17 @@ public class Table<T> implements ITable{
         this.builder = new StringBuilder();
     }
 
+    public boolean isEmpty(){
+        return this.linLabl.isEmpty() || this.colLabl.isEmpty() || this.iT.isEmpty();
+    }
+
+    public Table() {
+        this.linLabl = new ArrayList<>();
+        this.colLabl = new ArrayList<>();
+        this.iT      = new ArrayList<>();
+        this.builder = new StringBuilder();
+    }
+
     private void printSeparatorLine(int[] sizeCols) {
         StringBetter sif = new StringBetter("-");
         for (int j = 0; j <= sizeCols.length - 1; j++)

@@ -1,18 +1,90 @@
 package View;
-
 import Utils.StringBetter;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Stack;
 
+import static java.lang.System.out;
+
 public class Menu implements IMenu{
-    MenuInd menu;
-    Stack<MenuInd> prev;
-    ArrayList<MenuInd> options;
-    String menuString;
+    private MenuInd menu;
+    private Stack<MenuInd> prev;
+    private ArrayList<MenuInd> options;
+    private boolean run;
+
+    public String getInputClient(){
+        Scanner scanner = new Scanner(System.in);
+        boolean error = false;
+        while(true){
+            out.print("\033\143");
+            out.println(this.createHeader());
+            if (error)
+                out.println(new StringBetter("Cliente Inválido").under().append("\n").toString());
+            else
+                out.println();
+            out.println("Inserir cliente: ");
+            return scanner.nextLine();
+        }
+    }
+
+    public String getInputProduto(){
+        Scanner scanner = new Scanner(System.in);
+        boolean error = false;
+        while(true){
+            out.print("\033\143");
+            out.println(this.createHeader());
+            if (error)
+                out.println(new StringBetter("Produto Inválido").under().toString());
+            else
+                out.println();
+            out.println("Inserir Produto: ");
+            return scanner.nextLine();
+        }
+    }
+
+    public int getInputInteiro(){
+        Scanner scanner = new Scanner(System.in);
+        String str;
+        boolean error = false;
+        while(true){
+            out.print("\033\143");
+            out.println(this.createHeader());
+            if (error)
+                out.println(new StringBetter("Inteiro Inválido").under().toString());
+            else
+                out.println();
+            out.println("Inserir Inteiro: ");
+            str = scanner.nextLine();
+            if (str.matches("^[+-]?\\d{1,8}$"))
+                    return Integer.parseInt(str);
+            else
+                error = true;
+        }
+    }
+
+    public int getInputMes(){
+        Scanner scanner = new Scanner(System.in);
+        String str;
+        boolean error = false;
+        while(true){
+            out.print("\033\143");
+            out.println(this.createHeader());
+            if (error)
+                out.println(new StringBetter("Mês Inválido").under().toString());
+            else
+                out.println();
+            out.println("Inserir Mês: ");
+            str = scanner.nextLine();
+            if (str.matches("^[1-9]|1[0-2]$"))
+                return Integer.parseInt(str);
+            else
+                error = true;
+        }
+    }
 
     public enum MenuInd {
-        Initial,
+        Categories,
         Static,
         Dynamic,
         Q1,
@@ -30,30 +102,44 @@ public class Menu implements IMenu{
     }
 
     public Menu() {
-        this.menu = MenuInd.Initial;
-        this.prev = new Stack<MenuInd>();
+        this.menu = MenuInd.Categories;
+        this.prev = new Stack<>();
         this.options = new ArrayList<>();
+        this.run = true;
         this.correctMenu();
     }
 
     public Menu(MenuInd menuInd) {
         this.menu = menuInd;
-        this.prev = new Stack<MenuInd>();
+        this.prev = new Stack<>();
         this.options = new ArrayList<>();
+        this.run = true;
         this.correctMenu();
     }
 
+    public MenuInd getMenu() {
+        return this.menu;
+    }
+
     public Menu parser(String str){
-        if (str.matches("^[+-]?\\d+$")) {
+        if (str.matches("^[+-]?\\d{1,8}$")) {
             this.selectOption(Integer.parseInt(str));
         }
         switch (str){
             case "b":
             case "..":
                 this.back();
+                break;
+            case "e":
+                this.run = false;
+                break;
         }
 
         return this;
+    }
+
+    public boolean getRun() {
+        return this.run;
     }
 
     public Menu selectOption(int i){
@@ -70,22 +156,26 @@ public class Menu implements IMenu{
             this.menu = this.prev.pop();
             this.correctMenu();
         }
+        else {
+            this.run = false;
+        }
         return this;
     }
 
+    private String createHeader(){
+        StringBetter strHeader = new StringBetter("\t--");
+        for (MenuInd val : this.prev)
+            strHeader.append(val.name()).append("/");
+
+        return strHeader.append(this.menu.name()).append("--\n").red().toString();
+    }
 
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
-        StringBetter strB = new StringBetter("\t--");
+        s.append("\033\143");
+        s.append(this.createHeader()).append("\n\n");
 
-        for (MenuInd val : this.prev)
-            strB.append(val.name()).append("/");
-
-        s.append(strB.append(this.menu.name()).append("--\n").red().toString())
-                .append("\n")
-                .append(this.menuString)
-                .append("\n\n");
         for(int i = 0; i < this.options.size(); i++)
             s.append(i + 1).append("- ").append(this.menuOptionText(i)).append("\n");
         s.append("\n");
@@ -95,7 +185,7 @@ public class Menu implements IMenu{
     private String menuOptionText(int i) {
         String r = "";
         switch (this.options.get(i)){
-            case Initial:
+            case Categories:
                 r += "Menu Inicial";
                 break;
             case Static:
@@ -146,20 +236,17 @@ public class Menu implements IMenu{
 
     private void correctMenu() {
         switch (this.menu) {
-            case Initial:
-                this.menuString = "Initial";
+            case Categories:
                 this.options.clear();
                 this.options.add(MenuInd.Static);
                 this.options.add(MenuInd.Dynamic);
                 break;
             case Static:
-                this.menuString = "Static";
                 this.options.clear();
                 this.options.add(MenuInd.Q1_1);
                 this.options.add(MenuInd.Q1_2);
                 break;
             case Dynamic:
-                this.menuString = "Dynamic";
                 this.options.clear();
                 this.options.add(MenuInd.Q1);
                 this.options.add(MenuInd.Q2);
@@ -173,51 +260,39 @@ public class Menu implements IMenu{
                 this.options.add(MenuInd.Q10);
                 break;
             case Q1:
-                this.menuString = "Q1";
                 this.options.clear();
                 break;
             case Q2:
-                this.menuString = "Q2";
                 this.options.clear();
                 break;
             case Q3:
-                this.menuString = "Q3";
                 this.options.clear();
                 break;
             case Q4:
-                this.menuString = "Q4";
                 this.options.clear();
                 break;
             case Q5:
-                this.menuString = "Q5";
                 this.options.clear();
                 break;
             case Q6:
-                this.menuString = "Q6";
                 this.options.clear();
                 break;
             case Q7:
-                this.menuString = "Q7";
                 this.options.clear();
                 break;
             case Q8:
-                this.menuString = "Q8";
                 this.options.clear();
                 break;
             case Q9:
-                this.menuString = "Q9";
                 this.options.clear();
                 break;
             case Q10:
-                this.menuString = "Q10";
                 this.options.clear();
                 break;
             case Q1_1:
-                this.menuString = "Q1.1";
                 this.options.clear();
                 break;
             case Q1_2:
-                this.menuString = "Q1.2";
                 this.options.clear();
                 break;
         }
