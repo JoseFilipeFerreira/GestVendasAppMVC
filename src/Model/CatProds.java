@@ -47,10 +47,11 @@ public class CatProds implements ICatProds{
                 .containsKey(p);
     }
 
-    public void add(IProduct p) {
+    public ICatProds add(IProduct p) {
         this
                 .catProds
                 .put(p.getId(), p);
+        return this;
     }
 
     public int howMany() {

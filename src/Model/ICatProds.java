@@ -7,7 +7,7 @@ public interface ICatProds {
 
     public boolean exists(String p);
 
-    public void add(IProduct p);
+    public ICatProds add(IProduct p);
 
     public int howMany();
 

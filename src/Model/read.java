@@ -17,7 +17,7 @@ import static java.lang.System.out;
 public class read {
     public static void main(String[] args) {
         Crono.start();
-        GestVendas a = new GestVendas("db/Clientes.txt", "db/Produtos.txt", "db/Vendas_1M.txt");
+        GestVendasModel a = new GestVendasModel("db/Clientes.txt", "db/Produtos.txt", "db/Vendas_1M.txt");
         out.println(Crono.print());
 
     }
@@ -50,8 +50,8 @@ public class read {
         catch(IOException e) {
             out.println(e);
         }
-        out.println(clientes.stream().map(Client::new).filter(Client::verifyClient).collect(Collectors.toList()).size());
-        out.println(produtos.stream().map(Product::new).filter(Product::verifyProduct).collect(Collectors.toList()).size());
+        out.println((int) clientes.stream().map(Client::new).filter(Client::verifyClient).count());
+        out.println((int) produtos.stream().map(Product::new).filter(Product::verifyProduct).count());
         return getVendas(linhas);
     }
 
