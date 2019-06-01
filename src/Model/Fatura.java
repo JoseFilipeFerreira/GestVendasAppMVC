@@ -7,6 +7,14 @@ public class Fatura implements IFatura {
     private int[] quant;
 
     public Fatura() {
+        this.prodId = "";
+        this.nVendas = new int[3][12];
+        this.total = new double[3][12];
+        this.quant = new int[12];
+    }
+
+    public Fatura(String id) {
+        this.prodId = id;
         this.nVendas = new int[3][12];
         this.total = new double[3][12];
         this.quant = new int[12];
@@ -19,11 +27,26 @@ public class Fatura implements IFatura {
         this.quant = a.quant.clone();
     }
 
-    public IFatura update(IVenda v) {
-        this.nVendas[v.getFilial()][v.getMonth()]++;
-        this.total[v.getFilial()][v.getMonth()] += v.totalSale();
-        this.quant[v.getMonth()] += v.getQuant();
+    public Fatura update(IVenda v) {
+        this.nVendas[v.getFilial()-1][v.getMonth()-1]++;
+        this.total[v.getFilial()-1][v.getMonth()-1] += v.totalSale();
+        this.quant[v.getMonth()-1] += v.getQuant();
         return this;
+    }
+
+    public double getTotal() {
+        double a = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 12; j++) {
+                a += this.total[i][j];
+            }
+        }
+        return a;
+    }
+
+    @Override
+    public String getProdId() {
+        return this.prodId;
     }
 
     public Fatura clone() {

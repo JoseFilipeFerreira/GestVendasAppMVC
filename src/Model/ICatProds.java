@@ -3,13 +3,13 @@ package Model;
 import java.util.List;
 
 public interface ICatProds {
-    public boolean exists(IProduct p);
+    boolean exists(IProduct p);
 
-    public boolean exists(String p);
+    boolean exists(String p);
 
-    public ICatProds add(IProduct p);
+    ICatProds add(IProduct p);
 
-    public int howMany();
+    int howMany();
 
-    public List<IProduct> productList();
+    List<IProduct> productList();
 }

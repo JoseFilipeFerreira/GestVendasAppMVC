@@ -9,7 +9,7 @@ public class Venda implements IVenda{
     private int month;
     private char type;
 
-    public Venda(String sale) {
+    Venda(String sale) {
         String[] saleF = sale.split(" ");
         if(saleF.length != 7) this.unitPrice = -1;
         else {
@@ -24,14 +24,13 @@ public class Venda implements IVenda{
     }
 
     public boolean validSale() {
+        Constantes c = new Constantes();
         return this.unitPrice >= 0
                 && this.unitPrice <= 999.99
                 && this.quant >= 0
                 && this.quant <= 250
-                && this.month >= 1
-                && this.month <= 12
-                && this.filial >= 1
-                && this.filial <= 12;
+                && c.mesValido(this.month)
+                && c.filialValida(this.filial);
     }
 
     public double totalSale() {
@@ -42,47 +41,23 @@ public class Venda implements IVenda{
         return codCli;
     }
 
-    public void setCodCli(String codCli) {
-        this.codCli = codCli;
-    }
-
     public String getCodProd() {
         return codProd;
-    }
-
-    public void setCodProd(String codProd) {
-        this.codProd = codProd;
     }
 
     public double getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
     public int getQuant() {
         return quant;
-    }
-
-    public void setQuant(int quant) {
-        this.quant = quant;
     }
 
     public int getFilial() {
         return filial;
     }
 
-    public void setFilial(int filial) {
-        this.filial = filial;
-    }
-
     public int getMonth() {
         return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
     }
 }

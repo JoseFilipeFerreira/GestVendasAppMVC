@@ -10,4 +10,8 @@ public interface IVenda {
     int getFilial();
 
     int getQuant();
+
+    String getCodProd();
+
+    String getCodCli();
 }
