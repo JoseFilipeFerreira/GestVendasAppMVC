@@ -13,6 +13,32 @@ public class Menu implements IMenu{
     private ArrayList<MenuInd> options;
     private boolean run;
 
+    public <T> void menuNavigator(Navigator<T> nav){
+        Scanner scanner = new Scanner(System.in);
+        while(true){
+            out.print("\033\143");
+            out.println(this.createHeader());
+            out.println(nav);
+            switch (scanner.next().trim().charAt(0)){
+                case 'n':
+                    nav.next();
+                    break;
+                case 'p':
+                    nav.previous();
+                    break;
+                //case '+':
+                //    nav.moreLines();
+                //    break;
+                //case '-':
+                //    nav.lessLines();
+                //    break;
+                case 'b':
+                    this.back();
+                    return;
+            }
+        }
+    }
+
     public String getInputClient(){
         Scanner scanner = new Scanner(System.in);
         boolean error = false;
