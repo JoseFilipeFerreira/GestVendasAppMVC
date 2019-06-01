@@ -1,5 +1,5 @@
 import Controller.Controller;
-import Model.GestVendas;
+import Model.GestVendasModel;
 import View.Menu;
 import Utils.Crono;
 
@@ -8,7 +8,7 @@ public class Main {
         Crono crono = new Crono();
         Menu view = new Menu();
         crono.start();
-        GestVendas model = new GestVendas("db/Clientes.txt", "db/Produtos.txt", "db/Vendas_1M.txt");
+        GestVendasModel model = new GestVendasModel("db/Clientes.txt", "db/Produtos.txt", "db/Vendas_1M.txt");
         crono.stop();
         Controller controller = new Controller(view, model, crono);
 

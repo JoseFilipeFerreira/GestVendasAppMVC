@@ -16,9 +16,10 @@ import java.util.stream.Collectors;
 import static java.lang.System.out;
 public class read {
     public static void main(String[] args) {
-        Crono.start();
+        Crono crono = new Crono();
+        crono.start();
         GestVendasModel a = new GestVendasModel("db/Clientes.txt", "db/Produtos.txt", "db/Vendas_1M.txt");
-        out.println(Crono.print());
+        out.println(crono.stop());
 
     }
 

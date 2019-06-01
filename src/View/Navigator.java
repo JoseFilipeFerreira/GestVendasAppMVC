@@ -16,10 +16,6 @@ public class Navigator<T> implements INavigator{
     private int maxPrint;
     private Terminal term;
 
-    public boolean isEmpty(){
-        return this.strings.isEmpty();
-    }
-
     public Navigator(ArrayList<T> strings) {
         this.builder = new StringBuilder();
         this.strings = strings;
@@ -40,20 +36,6 @@ public class Navigator<T> implements INavigator{
     public void previous() {
         this.page = (page - 1 >= 0)?page -1 : page;
     }
-
-    /*
-    public void moreLines() {
-        this.pageSize++;
-        this.update();
-    }
-
-    public void lessLines() {
-        if(this.pageSize > 1) {
-            this.pageSize--;
-            this.update();
-        }
-    }
-    */
 
     private void update(){
         term.update();

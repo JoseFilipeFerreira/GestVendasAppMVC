@@ -26,66 +26,10 @@ public class Menu implements IMenu{
                 case 'p':
                     nav.previous();
                     break;
-                //case '+':
-                //    nav.moreLines();
-                //    break;
-                //case '-':
-                //    nav.lessLines();
-                //    break;
                 case 'b':
                     this.back();
                     return;
             }
-        }
-    }
-
-    public String getInputClient(){
-        Scanner scanner = new Scanner(System.in);
-        boolean error = false;
-        while(true){
-            out.print("\033\143");
-            out.println(this.createHeader());
-            if (error)
-                out.println(new StringBetter("Cliente Inválido").under().append("\n").toString());
-            else
-                out.println();
-            out.println("Inserir cliente: ");
-            return scanner.nextLine();
-        }
-    }
-
-    public String getInputProduto(){
-        Scanner scanner = new Scanner(System.in);
-        boolean error = false;
-        while(true){
-            out.print("\033\143");
-            out.println(this.createHeader());
-            if (error)
-                out.println(new StringBetter("Produto Inválido").under().toString());
-            else
-                out.println();
-            out.println("Inserir Produto: ");
-            return scanner.nextLine();
-        }
-    }
-
-    public int getInputInteiro(){
-        Scanner scanner = new Scanner(System.in);
-        String str;
-        boolean error = false;
-        while(true){
-            out.print("\033\143");
-            out.println(this.createHeader());
-            if (error)
-                out.println(new StringBetter("Inteiro Inválido").under().toString());
-            else
-                out.println();
-            out.println("Inserir Inteiro: ");
-            str = scanner.nextLine();
-            if (str.matches("^[+-]?\\d{1,8}$"))
-                    return Integer.parseInt(str);
-            else
-                error = true;
         }
     }
 
@@ -188,6 +132,13 @@ public class Menu implements IMenu{
         return this;
     }
 
+    private void displayMenuHeader(String error) {
+        out.print("\033\143");
+        out.println(this.createHeader());
+        out.println(new StringBetter(error).under().toString());
+    }
+
+
     private String createHeader(){
         StringBetter strHeader = new StringBetter("\t--");
         for (MenuInd val : this.prev)
@@ -209,61 +160,46 @@ public class Menu implements IMenu{
     }
 
     private String menuOptionText(int i) {
-        String r = "";
         switch (this.options.get(i)){
             case Categories:
-                r += "Menu Inicial";
-                break;
+                return "Menu Inicial";
             case Static:
-                r += "Queries estáticas";
-                break;
+                return "Queries estáticas";
             case Dynamic:
-                r += "Queries dinâmicas";
-                break;
+                return "Queries dinâmicas";
             case Q1:
-                r += "Produtos não comprados";
-                break;
+                return "Produtos não comprados";
             case Q2:
-                r += "Total de vendas e clientes distintos";
-                break;
+                return "Total de vendas e clientes distintos";
             case Q3:
-                r += "Stats sobre cliente (ano)";
-                break;
+                return "Stats sobre cliente (ano)";
             case Q4:
-                r += "Stats sobre produto (ano)";
-                break;
+                return "Stats sobre produto (ano)";
             case Q5:
-                r += "Produtos mais comprados por cliente";
-                break;
+                return "Produtos mais comprados por cliente";
             case Q6:
-                r += "N produtos mais vendidos";
-                break;
+                return "N produtos mais vendidos";
             case Q7:
-                r += "Três maiores compradores";
-                break;
+                return  "Três maiores compradores";
             case Q8:
-                r += "N clientes que compraram mais produtos diferentes";
-                break;
+                return "N clientes que compraram mais produtos diferentes";
             case Q9:
-                r += "Clientes que mais compraram um produto";
-                break;
+                return "Clientes que mais compraram um produto";
             case Q10:
-                r += "Faturação total";
-                break;
+                return "Faturação total";
             case Q1_1:
-                r += "Stats de ficheiros lidos";
-                break;
+                return "Stats de ficheiros lidos";
             case Q1_2:
-                r += "Stats globais";
-                break;
+                return  "Stats globais";
+                default:
+                    return "";
         }
-        return r;
     }
 
     private void correctMenu() {
+        this.options.clear();
         switch (this.menu) {
             case Categories:
-                this.options.clear();
                 this.options.add(MenuInd.Static);
                 this.options.add(MenuInd.Dynamic);
                 break;
@@ -284,42 +220,6 @@ public class Menu implements IMenu{
                 this.options.add(MenuInd.Q8);
                 this.options.add(MenuInd.Q9);
                 this.options.add(MenuInd.Q10);
-                break;
-            case Q1:
-                this.options.clear();
-                break;
-            case Q2:
-                this.options.clear();
-                break;
-            case Q3:
-                this.options.clear();
-                break;
-            case Q4:
-                this.options.clear();
-                break;
-            case Q5:
-                this.options.clear();
-                break;
-            case Q6:
-                this.options.clear();
-                break;
-            case Q7:
-                this.options.clear();
-                break;
-            case Q8:
-                this.options.clear();
-                break;
-            case Q9:
-                this.options.clear();
-                break;
-            case Q10:
-                this.options.clear();
-                break;
-            case Q1_1:
-                this.options.clear();
-                break;
-            case Q1_2:
-                this.options.clear();
                 break;
         }
     }
