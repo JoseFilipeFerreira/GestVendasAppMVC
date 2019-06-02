@@ -95,4 +95,12 @@ class Filial {
                                 .map(IVenda::getCodProd)
                                 .collect(Collectors.toSet())));
     }
+
+    Map<String, Double> clientesQueMaisCompraram(String prodID) {
+        List<IVenda> a = this.infoProds.get(prodID);
+        if(a != null)
+            return a.stream()
+            .collect(Collectors.toMap(IVenda::getCodCli, IVenda::totalSale, Double::sum));
+        return null;
+    }
 }

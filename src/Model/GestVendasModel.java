@@ -1,6 +1,7 @@
 package Model;
 
 import Exceptions.InvalidFilialException;
+import Exceptions.InvalidProductExecption;
 import Exceptions.IvalidClientException;
 import Exceptions.MesInvalidoException;
 
@@ -102,7 +103,12 @@ public class GestVendasModel {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum))
                 .entrySet()
                 .stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .sorted((o1, o2) -> {
+                    int a = Integer.compare(o2.getValue(), o1.getValue());
+                    if(a == 0)
+                        a = o2.getKey().compareTo(o1.getKey());
+                    return a;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -149,6 +155,27 @@ public class GestVendasModel {
                         .reverseOrder(Map.Entry
                                 .comparingByValue(Comparator.comparingInt(Set::size))))
                 .map(Map.Entry::getKey)
+                .limit(limite)
+                .collect(Collectors.toList());
+    }
+
+    //query 9
+    public List<Map.Entry<String,Double>> clientesQueMaisCompraram(String prodID, int limite) throws InvalidProductExecption {
+        if(!this.catProds.exists(prodID))
+            throw new InvalidProductExecption();
+        return Arrays.stream(filiais)
+                .flatMap(e -> e.clientesQueMaisCompraram(prodID)
+                        .entrySet()
+                        .stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Double::sum))
+                .entrySet()
+                .stream()
+                .sorted((o1, o2) -> {
+                    int a = Double.compare(o2.getValue(), o1.getValue());
+                    if(a == 0)
+                        a = o2.getKey().compareTo(o1.getKey());
+                    return a;
+                })
                 .limit(limite)
                 .collect(Collectors.toList());
     }
