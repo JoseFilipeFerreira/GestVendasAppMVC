@@ -98,9 +98,22 @@ class Filial {
 
     Map<String, Double> clientesQueMaisCompraram(String prodID) {
         List<IVenda> a = this.infoProds.get(prodID);
-        if(a != null)
+        if (a != null)
             return a.stream()
-            .collect(Collectors.toMap(IVenda::getCodCli, IVenda::totalSale, Double::sum));
+                    .collect(Collectors.toMap(IVenda::getCodCli, IVenda::totalSale, Double::sum));
         return null;
+    }
+
+    Map.Entry<Set<String>, Map.Entry<Integer, Double>> statsCliente(String clientID, int mes) {
+        List<IVenda> a = this.infoClients.get(clientID).stream().filter(e -> e.getMonth() != mes).collect(Collectors.toList());
+        List<Double> z = a.stream()
+                            .map(IVenda::totalSale)
+                            .collect(Collectors.toList());
+        Map.Entry<Integer, Double> o = new AbstractMap.SimpleEntry<>(z.size(), z.stream().reduce(0.0, Double::sum));
+        return new AbstractMap.SimpleEntry<>(
+                a.stream()
+                        .map(IVenda::getCodProd)
+                        .collect(Collectors.toSet()),
+                o);
     }
 }

@@ -89,6 +89,24 @@ public class GestVendasModel {
         return this.filiais[filial-1].clientesVendasTotais(mes);
     }
 
+    //query 3 (produtos comprados, n compras, quanto gastou)
+    public Map.Entry<Integer, Map.Entry<Integer,Double>> statsClientes(String clientID, int mes) throws MesInvalidoException, IvalidClientException {
+        if(!constantes.mesValido(mes))
+            throw new MesInvalidoException();
+        if(!this.catCli.exists(clientID))
+            throw new IvalidClientException();
+        Set<String> ree = new HashSet<>();
+        int vezes = 0;
+        double total = 0;
+        for(Filial a : this.filiais) {
+            Map.Entry<Set<String>, Map.Entry<Integer,Double>> o = a.statsCliente(clientID, mes);
+            ree.addAll(o.getKey());
+            vezes += o.getValue().getKey();
+            total += o.getValue().getValue();
+        }
+        return new AbstractMap.SimpleEntry<>(ree.size(), new AbstractMap.SimpleEntry<>(vezes, total));
+    }
+
     //Query 5
     public List<Map.Entry<String, Integer>> produtosPorCliente(String clientID) throws IvalidClientException {
         if(!this.catCli.exists(clientID))
