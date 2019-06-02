@@ -1,57 +1,16 @@
 package View;
 import Utils.StringBetter;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 import static java.lang.System.out;
+import static java.lang.System.setIn;
 
-public class Menu implements IMenu{
+public class Menu{
     private MenuInd menu;
     private Stack<MenuInd> prev;
     private ArrayList<MenuInd> options;
     private boolean run;
-
-    public <T> void menuNavigator(Navigator<T> nav){
-        Scanner scanner = new Scanner(System.in);
-        while(true){
-            out.print("\033\143");
-            out.println(this.createHeader());
-            out.println(nav);
-            switch (scanner.next().trim().charAt(0)){
-                case 'n':
-                    nav.next();
-                    break;
-                case 'p':
-                    nav.previous();
-                    break;
-                case 'b':
-                    this.back();
-                    return;
-            }
-        }
-    }
-
-    public int getInputMes(){
-        Scanner scanner = new Scanner(System.in);
-        String str;
-        boolean error = false;
-        while(true){
-            out.print("\033\143");
-            out.println(this.createHeader());
-            if (error)
-                out.println(new StringBetter("Mês Inválido").under().toString());
-            else
-                out.println();
-            out.println("Inserir Mês: ");
-            str = scanner.nextLine();
-            if (str.matches("^[1-9]|1[0-2]$"))
-                return Integer.parseInt(str);
-            else
-                error = true;
-        }
-    }
 
     public enum MenuInd {
         Categories,
@@ -79,6 +38,41 @@ public class Menu implements IMenu{
         this.correctMenu();
     }
 
+    public boolean getRun() {
+        return this.run;
+    }
+
+    public MenuInd getMenu() {
+        return this.menu;
+    }
+
+    public int getInputMes(){
+        Scanner scanner = new Scanner(System.in);
+        String str;
+        boolean error = false;
+        while(true){
+            out.print("\033\143");
+            out.println(this.createHeader());
+            if (error)
+                out.println(new StringBetter("Mês Inválido").under().toString());
+            else
+                out.println();
+            out.println("Inserir Mês: ");
+            str = scanner.nextLine();
+            if (str.matches("^[1-9]|1[0-2]$"))
+                return Integer.parseInt(str);
+            else
+                error = true;
+        }
+    }
+
+    public int getInputInteiro(String error, String text){
+        Scanner scanner = new Scanner(System.in);
+        this.displayMenuHeader(error);
+        out.println(text);
+        return scanner.nextInt();
+    }
+
     public Menu(MenuInd menuInd) {
         this.menu = menuInd;
         this.prev = new Stack<>();
@@ -87,11 +81,8 @@ public class Menu implements IMenu{
         this.correctMenu();
     }
 
-    public MenuInd getMenu() {
-        return this.menu;
-    }
-
-    public Menu parser(String str){
+    public Menu parser(){
+        String str = new Scanner(System.in).nextLine();
         if (str.matches("^[+-]?\\d{1,8}$")) {
             this.selectOption(Integer.parseInt(str));
         }
@@ -106,10 +97,6 @@ public class Menu implements IMenu{
         }
 
         return this;
-    }
-
-    public boolean getRun() {
-        return this.run;
     }
 
     public Menu selectOption(int i){
@@ -132,12 +119,36 @@ public class Menu implements IMenu{
         return this;
     }
 
+    public void showQ1(List<String> notBought, String time){
+        Navigator<String> nav = new Navigator<>(notBought);
+        this.menuNavigator(nav, time,"Clientes que não compraram");
+    }
+
+    public void showQ2(Map.Entry<Integer, Integer> sales, int mesSales, String time){
+        this.displayMenuHeader(time);
+        out.println("Vendas no mês [" + mesSales + "]: " + sales.getKey());
+        out.println("Clientes no mês [" + mesSales + "]: " + sales.getValue());
+        new Scanner(System.in).nextLine();
+    }
+
+    public void showQ7(List<String> clis, String time){
+        this.displayMenuHeader("Tempo demorado: " + time);
+        out.println();
+        out.println("3 melhores clientes:");
+        out.println();
+        for(int i = 0; i < clis.size() && i < 3; i++){
+            out.println((i + 1) + "º " + clis.get(i));
+        }
+
+        new Scanner(System.in).nextLine();
+
+    }
+
     private void displayMenuHeader(String error) {
         out.print("\033\143");
         out.println(this.createHeader());
         out.println(new StringBetter(error).under().toString());
     }
-
 
     private String createHeader(){
         StringBetter strHeader = new StringBetter("\t--");
@@ -147,16 +158,24 @@ public class Menu implements IMenu{
         return strHeader.append(this.menu.name()).append("--\n").red().toString();
     }
 
-    @Override
-    public String toString() {
-        StringBuilder s = new StringBuilder();
-        s.append("\033\143");
-        s.append(this.createHeader()).append("\n\n");
-
-        for(int i = 0; i < this.options.size(); i++)
-            s.append(i + 1).append("- ").append(this.menuOptionText(i)).append("\n");
-        s.append("\n");
-        return s.toString();
+    private <T> void menuNavigator(Navigator<T> nav, String time, String title){
+        Scanner scanner = new Scanner(System.in);
+        while(true){
+            this.displayMenuHeader(time);
+            out.println(title);
+            out.println(nav);
+            switch (scanner.next().trim().charAt(0)){
+                case 'n':
+                    nav.next();
+                    break;
+                case 'p':
+                    nav.previous();
+                    break;
+                case 'b':
+                    this.back();
+                    return;
+            }
+        }
     }
 
     private String menuOptionText(int i) {
@@ -222,5 +241,17 @@ public class Menu implements IMenu{
                 this.options.add(MenuInd.Q10);
                 break;
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append("\033\143");
+        s.append(this.createHeader()).append("\n\n");
+
+        for(int i = 0; i < this.options.size(); i++)
+            s.append(i + 1).append("- ").append(this.menuOptionText(i)).append("\n");
+        s.append("\n");
+        return s.toString();
     }
 }

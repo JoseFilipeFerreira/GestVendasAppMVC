@@ -1,21 +1,5 @@
-package Utils;/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+package Utils;
 
-/**
- *
- * @author asus
- */
-/**
- * Utils.Crono = mede um tempo entre start() e stop()
- * O tempo e medido em nanosegundos e convertido para 
- *  um double que representa os segs na sua parte inteira.
- * 
- * @author FMM 
- * @version (a version number or a date)
- */
 import static java.lang.System.nanoTime;
 public class Crono {
 
@@ -40,6 +24,6 @@ public class Crono {
   @Override
   public String toString() {
       long elapsedTime = this.fim - this.inicio;
-      return "" + (elapsedTime / 1.0E09);
+      return String.format("%.2f",elapsedTime / 1.0E06) + "ms";
   }
 }

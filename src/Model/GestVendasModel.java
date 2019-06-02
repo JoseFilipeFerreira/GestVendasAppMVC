@@ -66,7 +66,7 @@ public class GestVendasModel {
 
     //query 7
     public List<String> melhoresClientesPorFilial(int filial) throws InvalidFilialException {
-        if(this.constantes.filialValida(filial))
+        if(!this.constantes.filialValida(filial))
             throw new InvalidFilialException();
         return this.filiais[filial-1].getBestBuyers();
     }

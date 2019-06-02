@@ -3,10 +3,10 @@ package View;
 import Utils.StringBetter;
 import Utils.Terminal;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Navigator<T> implements INavigator{
-    private ArrayList<T> strings;
+    private List<T> strings;
     private final StringBuilder builder;
     private int pageSize;
     private int nCols;
@@ -16,7 +16,7 @@ public class Navigator<T> implements INavigator{
     private int maxPrint;
     private Terminal term;
 
-    public Navigator(ArrayList<T> strings) {
+    public Navigator(List<T> strings) {
         this.builder = new StringBuilder();
         this.strings = strings;
         this.term = new Terminal();
@@ -39,7 +39,7 @@ public class Navigator<T> implements INavigator{
 
     private void update(){
         term.update();
-        this.pageSize = this.term.getLines() - 7;
+        this.pageSize = this.term.getLines() - 10;
         if (this.pageSize < 1)
             this.pageSize = 1;
         this.nCols = 1;
@@ -49,7 +49,10 @@ public class Navigator<T> implements INavigator{
             else
                 break;
         }
-        this.nPages = (strings.size() / (pageSize * nCols))
+        if (this.strings.size() == 0)
+            this.nPages = 0;
+        else
+            this.nPages = (strings.size() / (pageSize * nCols))
                 - ((strings.size() % (pageSize * nCols) != 0) ? 0 : 1);
         if(this.page > this.nPages)
             this.page = this.nPages;
@@ -62,6 +65,7 @@ public class Navigator<T> implements INavigator{
         StringBetter senter = new StringBetter("\n");
         int pos, r = 0;
         builder.setLength(0);
+        builder.append("Total: " + this.strings.size()).append("\n");
         for(int i = this.pageSize * this.page; i < this.pageSize * (this.page + 1); i++){
             for(int j = 0; j < this.nCols && j + i * this.nCols < this.strings.size(); j++){
                 pos = j + i * this.nCols;
