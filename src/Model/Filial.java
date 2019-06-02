@@ -106,14 +106,23 @@ class Filial {
 
     Map.Entry<Set<String>, Map.Entry<Integer, Double>> statsCliente(String clientID, int mes) {
         List<IVenda> a = this.infoClients.get(clientID).stream().filter(e -> e.getMonth() != mes).collect(Collectors.toList());
+        return getSetEntryEntry(a);
+    }
+
+    private Map.Entry<Set<String>, Map.Entry<Integer, Double>> getSetEntryEntry(List<IVenda> a) {
         List<Double> z = a.stream()
-                            .map(IVenda::totalSale)
-                            .collect(Collectors.toList());
+                .map(IVenda::totalSale)
+                .collect(Collectors.toList());
         Map.Entry<Integer, Double> o = new AbstractMap.SimpleEntry<>(z.size(), z.stream().reduce(0.0, Double::sum));
         return new AbstractMap.SimpleEntry<>(
                 a.stream()
                         .map(IVenda::getCodProd)
                         .collect(Collectors.toSet()),
                 o);
+    }
+
+    Map.Entry<Set<String>, Map.Entry<Integer, Double>> statsProduto(String productID, int mes) {
+        List<IVenda> a = this.infoProds.get(productID).stream().filter(e -> e.getMonth() != mes).collect(Collectors.toList());
+        return getSetEntryEntry(a);
     }
 }
