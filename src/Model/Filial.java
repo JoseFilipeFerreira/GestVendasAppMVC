@@ -61,7 +61,7 @@ class Filial {
     Map.Entry<Integer, Integer> clientesVendasTotais(int mes) {
         List<Map.Entry<String, Integer>> b = this.infoClients.entrySet()
                 .stream()
-                .map(e -> {e.getValue().removeIf(a -> a.getMonth() != mes - 1); return new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().size());})
+                .map(e -> {e.getValue().removeIf(a -> a.getMonth() != mes); return new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().size());})
                 .collect(Collectors.toList());
         return new AbstractMap.SimpleEntry<>(b.size(), b.stream().mapToInt(Map.Entry::getValue).sum());
     }
@@ -105,7 +105,7 @@ class Filial {
     }
 
     Map.Entry<Set<String>, Map.Entry<Integer, Double>> statsCliente(String clientID, int mes) {
-        List<IVenda> a = this.infoClients.get(clientID).stream().filter(e -> e.getMonth() != mes).collect(Collectors.toList());
+        List<IVenda> a = this.infoClients.get(clientID).stream().filter(e -> e.getMonth() == mes).collect(Collectors.toList());
         return getSetEntryEntry(a);
     }
 
@@ -131,7 +131,7 @@ class Filial {
                 .stream()
                 .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue()
                         .stream()
-                .filter(a -> a.getMonth() != mes)
+                .filter(a -> a.getMonth() == mes)
                 .mapToDouble(IVenda::totalSale)
                 .sum()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
