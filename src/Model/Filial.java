@@ -125,4 +125,15 @@ class Filial {
         List<IVenda> a = this.infoProds.get(productID).stream().filter(e -> e.getMonth() != mes).collect(Collectors.toList());
         return getSetEntryEntry(a);
     }
+
+    Map<String, Double> faturacaoR(int mes) {
+        return this.infoProds.entrySet()
+                .stream()
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue()
+                        .stream()
+                .filter(a -> a.getMonth() != mes)
+                .mapToDouble(IVenda::totalSale)
+                .sum()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 }

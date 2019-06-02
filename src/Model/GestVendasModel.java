@@ -214,4 +214,13 @@ public class GestVendasModel {
                 .limit(limite)
                 .collect(Collectors.toList());
     }
+
+    //query 10
+    public Map<String, Double> faturacaoProd(int mes, int filial) throws InvalidFilialException, MesInvalidoException {
+        if(!constantes.filialValida(filial))
+            throw new InvalidFilialException();
+        if(!constantes.mesValido(mes))
+            throw new MesInvalidoException();
+        return this.filiais[filial-1].faturacaoR(mes);
+    }
 }
