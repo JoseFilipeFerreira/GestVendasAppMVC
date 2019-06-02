@@ -1,14 +1,13 @@
 package Model;
 
 import Exceptions.InvalidFilialException;
+import Exceptions.IvalidClientException;
 import Exceptions.MesInvalidoException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.AbstractMap;
-import java.util.List;
+import java.util.*;
 import java.nio.file.*;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.System.*;
@@ -95,4 +94,44 @@ public class GestVendasModel {
             throw new MesInvalidoException();
         return this.filiais[filial-1].clientesVendasTotais(mes);
     }
+
+    //Query 5
+    public List<Map.Entry<String, Integer>> produtosPorCliente(String clientID) throws IvalidClientException {
+        if(!this.catCli.exists(clientID))
+            throw new IvalidClientException();
+        List<Map<String, Integer>> b = new ArrayList<>();
+        for(Filial a : this.filiais) {
+            b.add(a.produtosCompradosPorCliente(clientID));
+        }
+        return b.stream()
+                .filter(Objects::nonNull)
+                .flatMap(e -> e.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum))
+                .entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(Collectors.toList());
+    }
+
+    //query 6
+    public List<Map.Entry<String, Integer>> produtosMaisVendidos(int limite) {
+        List<Map<String, Map.Entry<Integer,Integer>>> a = new ArrayList<>();
+        for(Filial x : this.filiais) {
+            a.add(x.produtosMaisVendidos());
+        }
+        return a.stream()
+                .flatMap(e -> e.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> new AbstractMap.SimpleEntry<>(e1.getKey(), e1.getValue() + e2.getValue())))
+                .entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Map.Entry.comparingByKey())))
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().getValue()))
+                .limit(limite)
+                .collect(Collectors.toList());
+    }
+
+
+
 }

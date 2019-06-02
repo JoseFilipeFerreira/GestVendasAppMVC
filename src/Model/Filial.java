@@ -65,4 +65,34 @@ class Filial {
                 .collect(Collectors.toList());
         return new AbstractMap.SimpleEntry<>(b.size(), b.stream().mapToInt(Map.Entry::getValue).sum());
     }
+
+    Map<String, Integer> produtosCompradosPorCliente(String clientID) {
+        List<IVenda> a = this.infoClients.get(clientID);
+        if(a != null) {
+            return a.stream().collect(Collectors.toMap(IVenda::getCodProd, IVenda::getQuant, Integer::sum));
+        }
+        return null;
+    }
+
+    Map<String, Map.Entry<Integer, Integer>> produtosMaisVendidos() {
+        return this.infoProds.entrySet()
+                .stream()
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(),
+                        new AbstractMap.SimpleEntry<>(e.getValue().stream()
+                                .mapToInt(IVenda::getQuant)
+                                .sum(),
+                                (int) e.getValue().stream()
+                                        .map(IVenda::getCodCli)
+                                        .distinct()
+                                        .count())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    Map<String, Set<String>> maisDiversidadeDeProdutos() {
+        return this.infoClients.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        e -> e.getValue().stream()
+                                .map(IVenda::getCodProd)
+                                .collect(Collectors.toSet())));
+    }
 }
