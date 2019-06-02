@@ -57,13 +57,39 @@ public class Controller {
                     break;
 
                 case Q3:
-                    this.crono.start();
-                    this.crono.stop();
+                    try {
+                        String cliSStats = this.menu.getInputString(error, "Cliente a pesquisar:");
+                        int mesSStats = this.menu.getInputInt(error, "Mês a pesquisar:");
+                        this.crono.start();
+                        Map.Entry<Integer, Map.Entry<Integer, Double>> cliStats = this.model.statsClientes(cliSStats, mesSStats);
+                        this.crono.stop();
+
+                        this.menu.showQ3(cliSStats, mesSStats, cliStats, this.crono.toString());
+
+                        this.menu.back();
+                        error = "";
+
+                    }
+                    catch (IvalidClientException e) { error = "Cliente Inválido"; }
+                    catch (MesInvalidoException | InputMismatchException e) { error = "Mês Inválido"; }
                     break;
 
                 case Q4:
-                    this.crono.start();
-                    this.crono.stop();
+                    try {
+                        String prodSStats = this.menu.getInputString(error, "Produto a pesquisar:");
+                        int mesSStats = this.menu.getInputInt(error, "Mês a pesquisar:");
+                        this.crono.start();
+                        Map.Entry<Integer, Map.Entry<Integer, Double>> prodStats = this.model.statsProdutos(prodSStats, mesSStats);
+                        this.crono.stop();
+
+                        this.menu.showQ4(prodSStats, mesSStats, prodStats, this.crono.toString());
+
+                        this.menu.back();
+                        error = "";
+
+                    }
+                    catch (InvalidProductExecption e) { error = "Produto Inválido"; }
+                    catch (MesInvalidoException | InputMismatchException e) { error = "Mês Inválido"; }
                     break;
 
                 case Q5:
@@ -160,8 +186,24 @@ public class Controller {
                     break;
 
                 case Q10:
-                    this.crono.start();
-                    this.crono.stop();
+                    try{
+                        int mes = this.menu.getInputInt(error, "Mês a pesquisar:");
+                        int filial = this.menu.getInputInt(
+                                error,
+                                "Filial a pesquisar [1-" + this.constantes.numeroFiliais() + "]:");
+
+                        this.crono.start();
+                        Map<String, Double> fatTotal = this.model.faturacaoProd(mes, filial);
+                        this.crono.stop();
+
+                        this.menu.showQ10(fatTotal, mes, filial, this.crono.toString());
+
+                        this.menu.back();
+                        error = "";
+
+                    }
+                    catch (InvalidFilialException e) { error = "Filial Inválida"; }
+                    catch (MesInvalidoException e)     { error = "Mês inválido"; }
                     break;
 
                 case Q1_1:
