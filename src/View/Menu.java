@@ -2,9 +2,9 @@ package View;
 import Utils.StringBetter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.System.out;
-import static java.lang.System.setIn;
 
 public class Menu{
     private MenuInd menu;
@@ -46,39 +46,18 @@ public class Menu{
         return this.menu;
     }
 
-    public int getInputMes(){
-        Scanner scanner = new Scanner(System.in);
-        String str;
-        boolean error = false;
-        while(true){
-            out.print("\033\143");
-            out.println(this.createHeader());
-            if (error)
-                out.println(new StringBetter("Mês Inválido").under().toString());
-            else
-                out.println();
-            out.println("Inserir Mês: ");
-            str = scanner.nextLine();
-            if (str.matches("^[1-9]|1[0-2]$"))
-                return Integer.parseInt(str);
-            else
-                error = true;
-        }
-    }
-
-    public int getInputInteiro(String error, String text){
+    public int getInputInt(String error, String text){
         Scanner scanner = new Scanner(System.in);
         this.displayMenuHeader(error);
         out.println(text);
         return scanner.nextInt();
     }
 
-    public Menu(MenuInd menuInd) {
-        this.menu = menuInd;
-        this.prev = new Stack<>();
-        this.options = new ArrayList<>();
-        this.run = true;
-        this.correctMenu();
+    public String getInputString(String error, String text){
+        Scanner scanner = new Scanner(System.in);
+        this.displayMenuHeader(error);
+        out.println(text);
+        return scanner.nextLine();
     }
 
     public Menu parser(){
@@ -99,7 +78,7 @@ public class Menu{
         return this;
     }
 
-    public Menu selectOption(int i){
+    private Menu selectOption(int i){
         if (this.options.size() > i - 1) {
             this.prev.push(this.menu);
             this.menu = this.options.get(i - 1);
@@ -131,8 +110,25 @@ public class Menu{
         new Scanner(System.in).nextLine();
     }
 
+    public void showQ5(List<String> prodsCli, String client, String time){
+        this.displayMenuHeader(time);
+        Navigator<String> nav = new Navigator<>(prodsCli);
+        this.menuNavigator(nav, time,"Produtos mais comprados por " + client);
+    }
+
+    public void showQ6(List<List<String>> prodsM, String time){
+        List<String> colLabl = new ArrayList<>();
+        colLabl.add("Produto");
+        colLabl.add("Vendas");
+
+        this.displayMenuHeader(time);
+        out.println(this.defaultTable(colLabl, prodsM));
+
+        new Scanner(System.in).nextLine();
+    }
+
     public void showQ7(List<String> clis, String time){
-        this.displayMenuHeader("Tempo demorado: " + time);
+        this.displayMenuHeader(time);
         out.println();
         out.println("3 melhores clientes:");
         out.println();
@@ -141,7 +137,37 @@ public class Menu{
         }
 
         new Scanner(System.in).nextLine();
+    }
 
+    public void showQ8(List<String> clis, String time){
+        this.displayMenuHeader(time);
+        List<String> colLabl = new ArrayList<>();
+        colLabl.add("Clientes mais diversificados");
+        out.println(defaultTable(
+                colLabl,
+                clis
+                        .stream()
+                        .map(e -> {List<String> a = new ArrayList<>();a.add(e);return a;})
+                        .collect(Collectors.toList())));
+        new Scanner(System.in).nextLine();
+    }
+
+    public void showQ9(List<List<String>> clis, String time){
+        List<String> colLabl = new ArrayList<>();
+        colLabl.add("Cliente");
+        colLabl.add("Total Gasto");
+
+        this.displayMenuHeader(time);
+        out.println(this.defaultTable(colLabl, clis));
+
+        new Scanner(System.in).nextLine();
+    }
+
+    private <T> Table defaultTable(List <String> colLabl, List<List <T>> vals){
+        List<String> linLabl = new ArrayList<>();
+        for(int i = 0; i < vals.size(); i++)
+            linLabl.add((i +1) + "º");
+        return new Table<>(vals, linLabl, colLabl);
     }
 
     private void displayMenuHeader(String error) {
