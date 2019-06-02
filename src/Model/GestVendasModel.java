@@ -63,13 +63,6 @@ public class GestVendasModel {
         return this.filiais[filial-1].getNClientes();
     }
 
-    //query 7
-    public List<String> melhoresClientesPorFilial(int filial) throws InvalidFilialException {
-        if(!this.constantes.filialValida(filial))
-            throw new InvalidFilialException();
-        return this.filiais[filial-1].getBestBuyers();
-    }
-
     //query 1
     public List<String> listaDeProdutosNaoComprados() {
         return this.faturacao.listaProdutosNaoComprados();
@@ -132,6 +125,31 @@ public class GestVendasModel {
                 .collect(Collectors.toList());
     }
 
+    //query 7
+    public List<String> melhoresClientesPorFilial(int filial) throws InvalidFilialException {
+        if(!this.constantes.filialValida(filial))
+            throw new InvalidFilialException();
+        return this.filiais[filial-1].getBestBuyers();
+    }
 
-
+    //query 8
+    public List<String> clientesComMaisDiversidade(int limite) {
+        List<Map<String, Set<String>>> a = new ArrayList<>();
+        for(Filial x : this.filiais) {
+            a.add(x.maisDiversidadeDeProdutos());
+        }
+        return a.stream()
+                .flatMap(e -> e.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> {e1.addAll(e2); return e1;}))
+                .entrySet()
+                .stream()
+                .sorted(Collections
+                        .reverseOrder(Map.Entry
+                                .comparingByValue(Comparator.comparingInt(Set::size))))
+                .map(Map.Entry::getKey)
+                .limit(limite)
+                .collect(Collectors.toList());
+    }
 }
