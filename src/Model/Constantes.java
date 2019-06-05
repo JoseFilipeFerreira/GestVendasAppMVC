@@ -1,8 +1,8 @@
 package Model;
 
 public class Constantes {
-    private int numeroFiliais;
-    private int meses;
+    private final int numeroFiliais;
+    private final int meses;
 
     public Constantes(){
         this.numeroFiliais = 3;

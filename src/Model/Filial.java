@@ -1,9 +1,6 @@
 package Model;
 
-import Exceptions.MesInvalidoException;
-
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 class Filial {
@@ -122,7 +119,7 @@ class Filial {
     }
 
     Map.Entry<Set<String>, Map.Entry<Integer, Double>> statsProduto(String productID, int mes) {
-        List<IVenda> a = this.infoProds.get(productID).stream().filter(e -> e.getMonth() != mes).collect(Collectors.toList());
+        List<IVenda> a = this.infoProds.get(productID).stream().filter(e -> e.getMonth() == mes).collect(Collectors.toList());
         return getSetEntryEntry(a);
     }
 

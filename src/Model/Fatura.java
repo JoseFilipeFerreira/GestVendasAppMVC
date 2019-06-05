@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.*;
+
 public class Fatura implements IFatura {
     private String prodId;
     private int[][] nVendas; //mes filial
@@ -44,6 +46,24 @@ public class Fatura implements IFatura {
         return a;
     }
 
+    public Map<Integer, Double> getTotalFilial(int filial) {
+        Map<Integer, Double> a = new HashMap<>();
+        for (int i = 0; i < 12; i++) {
+            a.put(i, this.total[filial-1][i]);
+        }
+        return a;
+    }
+
+    public Map<Integer, Double> getTotalMensal() {
+        Map<Integer, Double> a = new HashMap<>();
+        for (int i = 0; i < 12; i++) {
+            int finalI = i;
+            a.put(i, Arrays.stream(this.total)
+                    .mapToDouble(e -> e[finalI])
+                    .sum());
+        }
+        return a;
+    }
     @Override
     public String getProdId() {
         return this.prodId;

@@ -9,11 +9,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.nio.file.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.System.*;
-
 public class GestVendasModel {
+    private String vendasFile;
+    private int vendasLidas;
+    private String productFile;
+    private String clientFile;
     private ICatCli catCli;
     private ICatProds catProds;
     private List<IVenda> vendas;
@@ -21,33 +24,29 @@ public class GestVendasModel {
     private Filial[] filiais;
     private Constantes constantes;
 
-    public GestVendasModel(String clients, String products, String sales) {
+    public GestVendasModel(String clients, String products, String sales) throws IOException{
         this.catCli = new CatCli(clients);
+        this.clientFile = clients;
         this.catProds = new CatProds(products);
+        this.productFile = products;
         this.constantes = new Constantes();
-        try {
-            this.vendas = Files
-                    .readAllLines(Paths.get(sales), StandardCharsets.UTF_8)
-                    .stream()
-                    .map(Venda::new)
-                    .filter(e -> e.validSale()
-                            && catProds.exists(e.getCodProd())
-                            && catCli.exists(e.getCodCli()))
-                    .collect(Collectors
-                            .toList());
-            out.println(vendas.size());
-        }
-        catch(IOException e) {
-            out.println(e);
-        }
-
+        this.vendasLidas = 0;
+        this.vendas = Files
+                .readAllLines(Paths.get(sales), StandardCharsets.UTF_8)
+                .stream()
+                .map(e ->{this.vendasLidas++; return new Venda(e);})
+                .filter(e -> e.validSale()
+                        && catProds.exists(e.getCodProd())
+                        && catCli.exists(e.getCodCli()))
+                .collect(Collectors
+                        .toList());
+        this.vendasFile = sales;
         faturacao = new Faturacao(catProds);
         this.filiais = new Filial[constantes.numeroFiliais()];
         for (int i = 0; i < constantes.numeroFiliais(); i++) {
             this.filiais[i] = new Filial();
         }
         this.vendas.forEach(e -> {this.faturacao.update(e); this.filiais[e.getFilial()-1].update(e);});
-        out.println(faturacao.totalFaturado());
     }
 
     public long getVendasDadas() {
@@ -58,10 +57,70 @@ public class GestVendasModel {
                 .count();
     }
 
-    public int clientesPorFilial(int filial) throws InvalidFilialException {
-        if(this.constantes.filialValida(filial))
+    public int vendasInvalidas() {
+        return this.vendas.size() - this.vendasLidas;
+    }
+
+    public String getVendasFile() {
+        return this.vendasFile;
+    }
+
+    public String getProductFile() {
+        return this.productFile;
+    }
+
+    public String getClientFile() {
+        return this.clientFile;
+    }
+
+    public int getTotalProdutos() {
+        return this.catProds.howMany();
+    }
+
+    public Map.Entry<Integer, Integer> getProdutosComprados() {
+        int a = this.faturacao.produtosComprados();
+        return new AbstractMap.SimpleEntry<>(a, this.catProds.howMany() - a);
+    }
+
+    public Map.Entry<Integer, Integer> getClientesCompradores() {
+        int a = (int) this.vendas.stream()
+                .map(IVenda::getCodCli)
+                .distinct()
+                .count();
+        return new AbstractMap.SimpleEntry<>(a, this.catCli.howMany() - a);
+    }
+
+    public double totalFaturado() {
+        return this.faturacao.faturacaoTotal();
+    }
+
+    //1.2
+    public Map<Integer, Integer> vendasMensais() {
+        return this.vendas.stream()
+                .map(IVenda::getMonth)
+                .collect(Collectors.toMap(Function.identity(), e -> 1, Integer::sum));
+    }
+
+    public Map<Integer, Double> faturacaoTotal() {
+        return this.faturacao.totalFaturado();
+    }
+
+    public Map<Integer, Double> faturacaoPorFilial(int filial) throws InvalidFilialException {
+        if(!constantes.filialValida(filial))
             throw new InvalidFilialException();
-        return this.filiais[filial-1].getNClientes();
+        return this.faturacao.totalFaturadoFilial(filial);
+    }
+
+    public int clientesPorFilial(int filial, int mes) throws InvalidFilialException, MesInvalidoException {
+        if(!this.constantes.filialValida(filial))
+            throw new InvalidFilialException();
+        if(!this.constantes.mesValido(mes))
+            throw new MesInvalidoException();
+        return (int) this.vendas.stream()
+                .filter(e -> e.getMonth() == mes && e.getFilial() == filial)
+                .map(IVenda::getCodCli)
+                .distinct()
+                .count();
     }
 
     //query 1
@@ -73,7 +132,7 @@ public class GestVendasModel {
     public Map.Entry<Integer, Integer> clientesVendasTotais(int mes) throws MesInvalidoException {
         if(!constantes.mesValido(mes))
             throw new MesInvalidoException();
-        List<IVenda> a = this.vendas.stream().filter(e -> e.getMonth() != mes).collect(Collectors.toList());
+        List<IVenda> a = this.vendas.stream().filter(e -> e.getMonth() == mes).collect(Collectors.toList());
         return new AbstractMap.SimpleEntry<>(a.size(), (int) a
                 .stream()
                 .map(IVenda::getCodCli)
