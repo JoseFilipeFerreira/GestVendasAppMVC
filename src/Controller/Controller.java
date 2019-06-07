@@ -1,8 +1,8 @@
 package Controller;
 
+import Exceptions.InvalidClientException;
 import Exceptions.InvalidFilialException;
 import Exceptions.InvalidProductExecption;
-import Exceptions.IvalidClientException;
 import Exceptions.MesInvalidoException;
 import Model.Constantes;
 import Model.GestVendasModel;
@@ -70,7 +70,7 @@ public class Controller {
                         error = "";
 
                     }
-                    catch (IvalidClientException e) { error = "Cliente Inválido"; }
+                    catch (InvalidClientException e) { error = "Cliente Inválido"; }
                     catch (MesInvalidoException | InputMismatchException e) { error = "Mês Inválido"; }
                     break;
 
@@ -109,7 +109,7 @@ public class Controller {
                         this.menu.back();
                         error = "";
                     }
-                    catch (IvalidClientException e) { error = "Invalid Client"; }
+                    catch (InvalidClientException e) { error = "Invalid Client"; }
                     break;
 
                 case Q6:

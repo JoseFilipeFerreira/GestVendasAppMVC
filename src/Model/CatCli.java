@@ -16,18 +16,12 @@ import static java.lang.System.out;
 public class CatCli implements ICatCli {
     private Map<String, IClient> catCli;
 
-    public CatCli() {
-        this.catCli = new HashMap<>();
-    }
-
-    public CatCli(String fp) {
-        List<String> clients = new ArrayList<>();
-        try {
-            clients = Files.readAllLines(Paths.get(fp), StandardCharsets.UTF_8);
-        }
-        catch(IOException e) {
-            out.println(e);
-        }
+    /**
+     * Construtor do Catalogo de Clientes
+     * @param fp Ficheiro com informcação dos clientes
+     */
+    CatCli(String fp) throws IOException {
+        List<String> clients = Files.readAllLines(Paths.get(fp), StandardCharsets.UTF_8);
         this.catCli = clients
                 .stream()
                 .map(Client::new)
@@ -35,36 +29,24 @@ public class CatCli implements ICatCli {
                         .toMap(IClient::getId, Function.identity()));
     }
 
-    public boolean exists(IClient p) {
-        return this
-                .catCli
-                .containsKey(p.getId());
-    }
-
+    /**
+     * Verifica se um Cliente existe na base de dados
+     * @param p ID do cliente a pesquisar
+     * @return Se o cliente existe ou não
+     */
     public boolean exists(String p) {
         return this
                 .catCli
                 .containsKey(p);
     }
 
-    public void add(IClient p) {
-        this
-                .catCli
-                .put(p.getId(), p);
-    }
-
+    /**
+     * Calcula o número de clientes exixtentes
+     * @return Numero de clientes
+     */
     public int howMany() {
         return this
                 .catCli
                 .size();
-    }
-
-    public List<IClient> clientList() {
-        return this
-                .catCli
-                .values()
-                .stream()
-                .map(IClient::clone)
-                .collect(Collectors.toList());
     }
 }

@@ -18,12 +18,14 @@ public class read {
     public static void main(String[] args) {
         Crono crono = new Crono();
         crono.start();
+        GestVendasModel a;
         try {
-            GestVendasModel a = new GestVendasModel("db/Clientes.txt", "db/Produtos.txt", "db/Vendas_5M.txt");
+            a= new GestVendasModel("db/Clientes.txt", "db/Produtos.txt", "db/Vendas_1M.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
         out.println(crono.stop());
+
 
     }
 

@@ -13,21 +13,18 @@ import java.util.stream.Collectors;
 
 import static java.lang.System.*;
 
+/**
+ * Classe referente ao Catalogo de Produtos
+ */
 public class CatProds implements ICatProds{
     private Map<String, IProduct> catProds;
 
-    public CatProds() {
-        this.catProds = new HashMap<>();
-    }
-
-    public CatProds(String fp) {
-        List<String> produtos = new ArrayList<>();
-        try {
-            produtos = Files.readAllLines(Paths.get(fp), StandardCharsets.UTF_8);
-        }
-        catch(IOException e) {
-            out.println(e);
-        }
+    /**
+     * Construtor do catalogo de Produtos
+     * @param fp Caminho do ficheiro com a informação referente aos Produtos
+     */
+    CatProds(String fp) throws IOException{
+        List<String> produtos = Files.readAllLines(Paths.get(fp), StandardCharsets.UTF_8);
         this.catProds = produtos
                 .stream()
                 .map(Product::new)
@@ -35,31 +32,31 @@ public class CatProds implements ICatProds{
                         .toMap(IProduct::getId, Function.identity()));
     }
 
-    public boolean exists(IProduct p) {
-        return this
-                .catProds
-                .containsKey(p.getId());
-    }
-
+    /**
+     * Verifica se um produto existe na base de dados de Produtos
+     * @param p Id do produto a procurar
+     * @return Se o Produto existe ou não
+     */
     public boolean exists(String p) {
         return this
                 .catProds
                 .containsKey(p);
     }
 
-    public ICatProds add(IProduct p) {
-        this
-                .catProds
-                .put(p.getId(), p);
-        return this;
-    }
-
+    /**
+     * Calcula o número de produtos existentes
+     * @return Número de produtos existentes
+     */
     public int howMany() {
         return this
                 .catProds
                 .size();
     }
 
+    /**
+     * Calcula toda a lista de produtos
+     * @return Lista de produto
+     */
     public List<IProduct> productList() {
         return this
                 .catProds
