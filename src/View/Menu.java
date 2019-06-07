@@ -6,33 +6,11 @@ import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
-public class Menu{
+public class Menu implements IMenu{
     private MenuInd menu;
-    private Stack<MenuInd> prev;
-    private ArrayList<MenuInd> options;
+    private final Stack<MenuInd> prev;
+    private List<MenuInd> options;
     private boolean run;
-
-    public enum MenuInd {
-        Initial,
-        Categories,
-        Binary,
-        Save,
-        Load,
-        Static,
-        Dynamic,
-        Q1,
-        Q2,
-        Q3,
-        Q4,
-        Q5,
-        Q6,
-        Q7,
-        Q8,
-        Q9,
-        Q10,
-        Q1_1,
-        Q1_2
-    }
 
     public Menu() {
         this.menu = MenuInd.Initial;
@@ -42,13 +20,9 @@ public class Menu{
         this.correctMenu();
     }
 
-    public boolean getRun() {
-        return this.run;
-    }
+    public boolean getRun() { return this.run; }
 
-    public MenuInd getMenu() {
-        return this.menu;
-    }
+    public MenuInd getMenu() { return this.menu; }
 
     public int getInputInt(String error, String text){
         Scanner scanner = new Scanner(System.in);
@@ -240,6 +214,7 @@ public class Menu{
         colLabl.add("Stats de Ficheiros Lidos");
 
         List<String> linLabl = new ArrayList<>();
+        linLabl.add("Tempo de Carregamento");
         linLabl.add("Ficheiro de Vendas");
         linLabl.add("Ficheiro de Produtos");
         linLabl.add("Ficheiro de Clientes");
@@ -323,11 +298,11 @@ public class Menu{
     private String menuOptionText(int i) {
         switch (this.options.get(i)){
             case Binary:
-                return "Object Streams";
+                return "Estado de programa";
             case Load:
-                return "Carregar Object Streams";
+                return "Carregar Dados";
             case Save:
-                return "Guardar Object Streams";
+                return "Guardar Dados";
             case Categories:
                 return "Queries";
             case Static:
@@ -337,7 +312,7 @@ public class Menu{
             case Q1:
                 return "Produtos não comprados";
             case Q2:
-                return "Total de vendas e clientes distintos";
+                return "Vendas e clientes distintos";
             case Q3:
                 return "Stats sobre cliente (ano)";
             case Q4:
@@ -347,7 +322,7 @@ public class Menu{
             case Q6:
                 return "N produtos mais vendidos";
             case Q7:
-                return  "Três maiores compradores";
+                return "Três maiores compradores";
             case Q8:
                 return "N clientes que compraram mais produtos diferentes";
             case Q9:
@@ -357,14 +332,14 @@ public class Menu{
             case Q1_1:
                 return "Stats de ficheiros lidos";
             case Q1_2:
-                return  "Stats globais";
+                return "Stats globais";
                 default:
                     return "";
         }
     }
 
     private void correctMenu() {
-        this.options.clear();
+        this.options = new ArrayList<>();
         switch (this.menu) {
             case Initial:
                 this.options.add(MenuInd.Categories);

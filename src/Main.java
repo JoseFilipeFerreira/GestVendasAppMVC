@@ -7,6 +7,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
+
         Crono crono = new Crono();
         Menu view = new Menu();
         crono.start();

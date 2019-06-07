@@ -1,7 +1,7 @@
 package Utils;
 
 import static java.lang.System.nanoTime;
-public class Crono {
+public class Crono implements ICrono{
 
   private long inicio;
   private long fim;
