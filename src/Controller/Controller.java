@@ -44,16 +44,26 @@ public class Controller {
 
                 case Q2:
                     try {
-                        int mesSales = this.menu.getInputInt(error, "Mês a pesquisar:");
+                        int mesSales = this.menu.getInputInt(
+                                error,
+                                "Mês a pesquisar [1-" + this.constantes.meses() + "]:");
+                        int filialSales = this.menu.getInputInt(
+                                error,
+                                "Filial a pesquisar [1-" + this.constantes.numeroFiliais() + "] [0 para o total]:");
+                        Map.Entry<Integer, Integer> tSales;
                         this.crono.start();
-                        Map.Entry<Integer, Integer> tSales = this.model.clientesVendasTotais(mesSales);
+                        if(filialSales == 0)
+                            tSales = this.model.clientesVendasTotais(mesSales);
+                        else
+                            tSales = this.model.clientesVendasTotais(filialSales, mesSales);
                         this.crono.stop();
-                        this.menu.showQ2(tSales, mesSales, this.crono.toString());
+                        this.menu.showQ2(tSales, mesSales, filialSales, this.crono.toString());
                         this.menu.back();
                         error = "";
                     }
                     catch (InputMismatchException e) { error = "Input is not a number"; }
-                    catch (MesInvalidoException e) {error = "Mes Invalido"; }
+                    catch (MesInvalidoException e) {error = "Mes Inválido"; }
+                    catch (InvalidFilialException e) {error = "Filial Inválida"; }
                     break;
 
                 case Q3:
@@ -121,7 +131,12 @@ public class Controller {
                         this.menu.showQ6(
                                 prods
                                         .stream()
-                                        .map(e -> {List<String> a = new ArrayList<>();a.add(e.getKey()); a.add(e.getValue().toString());return a;})
+                                        .map(e -> {
+                                            List<String> a = new ArrayList<>();
+                                            a.add(e.getKey());
+                                            a.add(e.getValue().toString());
+                                            return a;})
+                                        .limit(nProdVend)
                                         .collect(Collectors.toList()),
                                 this.crono.toString());
 
@@ -153,7 +168,12 @@ public class Controller {
                         this.crono.start();
                         List<String> clisDiverse = this.model.clientesComMaisDiversidade(nCliSearch);
                         this.crono.stop();
-                        this.menu.showQ8(clisDiverse, this.crono.toString());
+                        this.menu.showQ8(
+                                clisDiverse
+                                        .stream()
+                                        .limit(nCliSearch)
+                                        .collect(Collectors.toList()),
+                                this.crono.toString());
 
                         this.menu.back();
                         error = "";
@@ -176,6 +196,7 @@ public class Controller {
                                             a.add(e.getKey());
                                             a.add(String.format("%.2f", e.getValue()));
                                             return a;})
+                                        .limit(nProdBrougth)
                                         .collect(Collectors.toList()),
                                 this.crono.toString());
                         this.menu.back();
@@ -207,12 +228,89 @@ public class Controller {
                     break;
 
                 case Q1_1:
-                    out.println(this.cronoLoad);
+                    this.crono.start();
+                    String fileVendas = this.model.getVendasFile();
+                    String fileProdutos = this.model.getProductFile();
+                    String fileCli = this.model.getClientFile();
+                    long vendas = this.model.getVendasDadas();
+                    int vendasInvalidas = this.model.vendasInvalidas();
+                    int totalProd = this.model.getTotalProdutos();
+                    double totalFat = this.model.totalFaturado();
+                    Map.Entry<Integer, Integer> prodsComprados = this.model.getProdutosComprados();
+                    Map.Entry<Integer, Integer> cliCompraram = this.model.getClientesCompradores();
+                    this.crono.stop();
+
+                    List<String> q11 = new ArrayList<>();
+                    q11.add(fileVendas);
+                    q11.add(fileProdutos);
+                    q11.add(fileCli);
+                    q11.add(String.valueOf(vendas));
+                    q11.add(String.valueOf(vendasInvalidas));
+                    q11.add(String.valueOf(totalProd));
+                    q11.add(String.format("%.2f", totalFat));
+                    q11.add(prodsComprados.getKey().toString());
+                    q11.add(prodsComprados.getValue().toString());
+                    q11.add(cliCompraram.getKey().toString());
+                    q11.add(cliCompraram.getValue().toString());
+
+                    this.menu.showQ11(
+                            q11
+                                    .stream()
+                                    .map(Arrays::asList)
+                                    .collect(Collectors.toList()),
+                            this.crono.toString());
+
+                    this.menu.back();
+
                     break;
 
                 case Q1_2:
                     this.crono.start();
+                    Map<Integer, Integer> monthSales = this.model.vendasMensais();
+                    List<Map<Integer, Double>> fatPerFilial = new ArrayList<>();
+                    for(int filial = 1; filial <= this.constantes.numeroFiliais(); filial++)
+                        try {
+                            fatPerFilial.add(this.model.faturacaoPorFilial(filial));
+                        } catch (InvalidFilialException e) {}
+
+                    List<List<Integer>> cliFilMes = new ArrayList<>();
+                    for(int filial = 1; filial <= this.constantes.numeroFiliais(); filial++) {
+                        List<Integer> tmp = new ArrayList<>();
+                        for (int mes = 1; mes <= this.constantes.meses(); mes++) {
+                            try {
+                                tmp.add(this.model.clientesPorFilial(filial, mes));
+                            }
+                            catch (InvalidFilialException | MesInvalidoException e) {}
+                        }
+                        cliFilMes.add(tmp);
+                    }
                     this.crono.stop();
+
+                    List<List<String>> monthly = new ArrayList<>();
+
+                    List<String> monthSalesList = new ArrayList<>();
+                    for(int mes = 1; mes <= this.constantes.meses(); mes++)
+                        monthSalesList.add(monthSales.get(mes).toString());
+                    monthly.add(monthSalesList);
+
+                    for(int filial = 0; filial < this.constantes.numeroFiliais(); filial++) {
+                        List<String> tmpFat = new ArrayList<>();
+                        for (int mes = 0; mes < this.constantes.meses(); mes++)
+                            tmpFat.add(String.format("%.2f", fatPerFilial.get(filial).get(mes)));
+                        monthly.add(tmpFat);
+                    }
+
+                    for(int filial = 0; filial < this.constantes.numeroFiliais(); filial++) {
+                        List<String> tmpCli = new ArrayList<>();
+                        for (int mes = 0; mes < this.constantes.meses(); mes++)
+                            tmpCli.add(cliFilMes.get(filial).get(mes).toString());
+                        monthly.add(tmpCli);
+                    }
+
+                    this.menu.showQ12(this.crono.toString(), monthly, this.constantes.meses(), this.constantes.numeroFiliais());
+
+                    this.menu.back();
+
                     break;
 
                     default:

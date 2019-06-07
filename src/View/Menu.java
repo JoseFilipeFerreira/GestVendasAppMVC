@@ -13,7 +13,11 @@ public class Menu{
     private boolean run;
 
     public enum MenuInd {
+        Initial,
         Categories,
+        Binary,
+        Save,
+        Load,
         Static,
         Dynamic,
         Q1,
@@ -31,7 +35,7 @@ public class Menu{
     }
 
     public Menu() {
-        this.menu = MenuInd.Categories;
+        this.menu = MenuInd.Initial;
         this.prev = new Stack<>();
         this.options = new ArrayList<>();
         this.run = true;
@@ -100,13 +104,19 @@ public class Menu{
 
     public void showQ1(List<String> notBought, String time){
         Navigator<String> nav = new Navigator<>(notBought);
-        this.menuNavigator(nav, time,"Clientes que não compraram");
+        this.menuNavigator(nav, time,"Produtos não comprados");
     }
 
-    public void showQ2(Map.Entry<Integer, Integer> sales, int mesSales, String time){
+    public void showQ2(Map.Entry<Integer, Integer> sales, int mesSales, int filialSales, String time){
         this.displayMenuHeader(time);
-        out.println("Vendas no mês [" + mesSales + "]: " + sales.getKey());
-        out.println("Clientes no mês [" + mesSales + "]: " + sales.getValue());
+        if(filialSales == 0){
+            out.println("Vendas totais no mês [" + mesSales + "]: " + sales.getKey());
+            out.println("Clientes totais no mês [" + mesSales + "]: " + sales.getValue());
+        }
+        else {
+            out.println("Vendas no mês [" + mesSales + "] na filial [" + filialSales + "]: " + sales.getKey());
+            out.println("Clientes no mês [" + mesSales + "] na filial [" + filialSales + "]: " + sales.getValue());
+        }
         new Scanner(System.in).nextLine();
     }
 
@@ -224,6 +234,51 @@ public class Menu{
         this.menuNavigator(nav, time, "Faturação total no mês [" + mes + "] na filial [" + filial + "]:");
     }
 
+    public void showQ11(List<List<String>> val, String time){
+        this.displayMenuHeader(time);
+        List<String> colLabl = new ArrayList<>();
+        colLabl.add("Stats de Ficheiros Lidos");
+
+        List<String> linLabl = new ArrayList<>();
+        linLabl.add("Ficheiro de Vendas");
+        linLabl.add("Ficheiro de Produtos");
+        linLabl.add("Ficheiro de Clientes");
+        linLabl.add("Vendas a zero");
+        linLabl.add("Vendas Inválidas");
+        linLabl.add("Produtos Lidos");
+        linLabl.add("Total Faturado");
+        linLabl.add("Produtos Comprados");
+        linLabl.add("Produtos não Comprados");
+        linLabl.add("Clientes que Compraram");
+        linLabl.add("Clientes que não Compraram");
+
+        Table<String> tab = new Table<>(val, linLabl, colLabl);
+        out.println(tab);
+
+        new Scanner(System.in).nextLine();
+
+    }
+
+    public void showQ12(String time, List<List<String>> monthly, int nMeses, int nFiliais){
+        List<String> colLabl = new ArrayList<>();
+        for(int i = 0; i < nMeses; i++)
+            colLabl.add("Mes ["+ (i + 1) +"]");
+
+        List<String>linLabl = new ArrayList<>();
+        linLabl.add("Total de Vendas");
+        for(int i = 0; i < nFiliais; i++)
+            linLabl.add("Faturação filial [" + (i+1) + "]");
+        for(int i = 0; i < nFiliais; i++)
+            linLabl.add("Clientes filial [" + (i+1) + "]");
+
+        Table<String> tab = new Table<>(monthly, linLabl, colLabl);
+
+        this.displayMenuHeader(time);
+        out.println(tab);
+
+        new Scanner(System.in).nextLine();
+    }
+
     private <T> Table defaultTable(List <String> colLabl, List<List <T>> vals){
         List<String> linLabl = new ArrayList<>();
         for(int i = 0; i < vals.size(); i++)
@@ -267,8 +322,14 @@ public class Menu{
 
     private String menuOptionText(int i) {
         switch (this.options.get(i)){
+            case Binary:
+                return "Object Streams";
+            case Load:
+                return "Carregar Object Streams";
+            case Save:
+                return "Guardar Object Streams";
             case Categories:
-                return "Menu Inicial";
+                return "Queries";
             case Static:
                 return "Queries estáticas";
             case Dynamic:
@@ -305,6 +366,14 @@ public class Menu{
     private void correctMenu() {
         this.options.clear();
         switch (this.menu) {
+            case Initial:
+                this.options.add(MenuInd.Categories);
+                this.options.add(MenuInd.Binary);
+                break;
+            case Binary:
+                this.options.add(MenuInd.Load);
+                this.options.add(MenuInd.Save);
+                break;
             case Categories:
                 this.options.add(MenuInd.Static);
                 this.options.add(MenuInd.Dynamic);
