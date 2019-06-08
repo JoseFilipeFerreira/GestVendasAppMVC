@@ -20,7 +20,7 @@ public class read {
         crono.start();
         GestVendasModel a;
         try {
-            a= new GestVendasModel("db/Clientes.txt", "db/Produtos.txt", "db/Vendas_1M.txt");
+            a= new GestVendasModel("db/Clientes.txt", "db/Produtos.txt", "db/Vendas_5M.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

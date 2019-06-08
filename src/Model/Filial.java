@@ -1,9 +1,10 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Filial implements IFilial{
+public class Filial implements IFilial, Serializable {
     private Map<String, List<IVenda>> infoClients;
     private Map<String, List<IVenda>> infoProds;
 

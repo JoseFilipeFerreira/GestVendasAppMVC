@@ -1,6 +1,8 @@
 package Model;
 
-public class Constantes {
+import java.io.Serializable;
+
+public class Constantes implements Serializable {
     private final int numeroFiliais;
     private final int meses;
 

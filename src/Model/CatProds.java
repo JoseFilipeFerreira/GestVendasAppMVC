@@ -1,6 +1,7 @@
 package Model;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,7 +17,7 @@ import static java.lang.System.*;
 /**
  * Classe referente ao Catalogo de Produtos
  */
-public class CatProds implements ICatProds{
+public class CatProds implements ICatProds, Serializable {
     private Map<String, IProduct> catProds;
 
     /**

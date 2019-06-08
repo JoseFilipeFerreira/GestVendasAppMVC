@@ -1,8 +1,9 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Fatura implements IFatura {
+public class Fatura implements IFatura, Serializable {
     private String prodId;
     private int[][] nVendas; //mes filial
     private double[][] total; //mes filial

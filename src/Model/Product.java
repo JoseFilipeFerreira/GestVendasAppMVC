@@ -1,6 +1,8 @@
 package Model;
 
-public class Product implements IProduct{
+import java.io.Serializable;
+
+public class Product implements IProduct, Serializable {
     private String id;
 
     public Product(String id) {

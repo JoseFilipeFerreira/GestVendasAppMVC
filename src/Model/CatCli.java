@@ -1,6 +1,7 @@
 package Model;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
-public class CatCli implements ICatCli {
+public class CatCli implements ICatCli, Serializable {
     private Map<String, IClient> catCli;
 
     /**

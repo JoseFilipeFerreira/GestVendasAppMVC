@@ -1,6 +1,8 @@
 package Model;
 
-public class Client implements IClient{
+import java.io.Serializable;
+
+public class Client implements IClient, Serializable {
     private String id;
 
     /**

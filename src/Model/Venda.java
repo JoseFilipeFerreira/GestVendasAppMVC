@@ -1,6 +1,8 @@
 package Model;
 
-public class Venda implements IVenda{
+import java.io.Serializable;
+
+public class Venda implements IVenda, Serializable {
     private String codCli;
     private String codProd;
     private double unitPrice;

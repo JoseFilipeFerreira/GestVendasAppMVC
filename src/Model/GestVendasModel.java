@@ -8,6 +8,7 @@ import java.util.*;
 import java.nio.file.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GestVendasModel implements Serializable{
     private String vendasFile;
@@ -35,10 +36,12 @@ public class GestVendasModel implements Serializable{
         this.productFile = products;
         this.constantes = new Constantes();
         this.vendasLidas = 0;
-        this.vendas = Files
-                .readAllLines(Paths.get(sales), StandardCharsets.UTF_8)
-                .stream()
-                .map(e ->{this.vendasLidas++; return new Venda(e);})
+        List<String> venda = Files
+                .readAllLines(Paths.get(sales), StandardCharsets.UTF_8);
+        this.vendasLidas = venda.size();
+        this.vendas = venda
+                .parallelStream()
+                .map(Venda::new)
                 .filter(e -> e.validSale()
                         && catProds.exists(e.getCodProd())
                         && catCli.exists(e.getCodCli()))
@@ -70,7 +73,7 @@ public class GestVendasModel implements Serializable{
      * @return Numero de vendas invalidas
      */
     public int vendasInvalidas() {
-        return -this.vendas.size() + this.vendasLidas;
+        return this.vendasLidas - this.vendas.size();
     }
 
     /**
@@ -110,7 +113,7 @@ public class GestVendasModel implements Serializable{
      * @return Numero de produtos comprados e nao comprados
      */
     public Map.Entry<Integer, Integer> getProdutosComprados() {
-        int a = this.faturacao.produtosComprados();
+        int a = (int) this.vendas.stream().map(IVenda::getCodProd).distinct().count();
         return new AbstractMap.SimpleEntry<>(a, this.catProds.howMany() - a);
     }
 
@@ -321,23 +324,30 @@ public class GestVendasModel implements Serializable{
     /**
      * Determina a lista ordenada dos produtos mais vendidos durante o ano,
      * bem como quem os comprou
-     * @param limite Numero de produtos que pretendemos saber
      * @return Lista ordenada dos produtos mais vendidos
      */
-    public List<Map.Entry<String, Integer>> produtosMaisVendidos(int limite) {
-        List<Map<String, Map.Entry<Integer,Integer>>> a = new ArrayList<>();
-        for(IFilial x : this.filiais) {
-            a.add(x.produtosMaisVendidos());
-        }
-        return Arrays.stream(this.filiais)
-                .flatMap(e -> e.produtosMaisVendidos().entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> new AbstractMap.SimpleEntry<>(e1.getKey(), e1.getValue() + e2.getValue())))
+    public List<Map.Entry<String, Integer>> produtosMaisVendidos() {
+        return this.vendas.stream()
+                .collect(Collectors.toMap(IVenda::getCodProd,
+                        e -> Stream.of(e)
+                                .collect(Collectors.toList()),
+                        (e1, e2) -> {e1.addAll(e2);
+                            return e1;}))
                 .entrySet()
                 .stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Map.Entry.comparingByKey())))
-                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().getValue()))
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(),
+                        e.getValue()
+                                .stream()
+                                .collect(Collectors.toMap(IVenda::getCodCli,
+                                        IVenda::getQuant,
+                                        Integer::sum))))
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(),
+                        new AbstractMap.SimpleEntry<>(e.getValue().size(),
+                                e.getValue().values().stream()
+                                        .mapToInt(Integer::intValue)
+                                        .sum())))
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Map.Entry.comparingByValue(Integer::compareTo))))
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().getKey()))
                 .collect(Collectors.toList());
     }
 
@@ -359,11 +369,10 @@ public class GestVendasModel implements Serializable{
 
     /**
      * Determina a lista de clientes que compraram mais produtos diferentes
-     * @param limite Numero de clientes pretendidos
      * @return Lista de clientes ordenada pelo numero de produtos distintos
      * comprados
      */
-    public List<String> clientesComMaisDiversidade(int limite) {
+    public List<String> clientesComMaisDiversidade() {
         List<Map<String, Set<String>>> a = new ArrayList<>();
         for(IFilial x : this.filiais) {
             a.add(x.maisDiversidadeDeProdutos());
@@ -388,11 +397,10 @@ public class GestVendasModel implements Serializable{
      * Determina a lista de clientes que mais compraram um dado produto e quanto
      * gastaram no total
      * @param prodID Codigo do Produto em questao
-     * @param limite Numero de clientes desejado
      * @return Lista ordenada dos clientes que mais compraram o produto
      * @throws InvalidProductExecption Exceção se o Produto não existir
      */
-    public List<Map.Entry<String,Double>> clientesQueMaisCompraram(String prodID, int limite) throws InvalidProductExecption {
+    public List<Map.Entry<String,Double>> clientesQueMaisCompraram(String prodID) throws InvalidProductExecption {
         if(!this.catProds.exists(prodID))
             throw new InvalidProductExecption();
         return Arrays.stream(filiais)

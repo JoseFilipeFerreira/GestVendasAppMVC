@@ -1,5 +1,6 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -8,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * Representa toda a faturação do sistema
  */
-public class Faturacao implements IFaturacao{
+public class Faturacao implements IFaturacao, Serializable {
     private Map<String, IFatura> faturacao;
 
     /**
