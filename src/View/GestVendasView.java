@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
-public class Menu implements IMenu{
+public class GestVendasView implements IGestVendasView {
     private MenuInd menu;
     private final Stack<MenuInd> prev;
     private List<MenuInd> options;
@@ -16,7 +16,7 @@ public class Menu implements IMenu{
     /**
      * Construtor da classe menu
      */
-    public Menu() {
+    public GestVendasView() {
         this.menu = MenuInd.Initial;
         this.prev = new Stack<>();
         this.options = new ArrayList<>();
@@ -68,7 +68,7 @@ public class Menu implements IMenu{
      * Lê o input do utilizador e altera o menu onde se está
      * @return this
      */
-    public Menu parser(){
+    public GestVendasView parser(){
         String str = new Scanner(System.in).nextLine();
         if (str.matches("^[+-]?\\d{1,8}$")) {
             this.selectOption(Integer.parseInt(str));
@@ -90,7 +90,7 @@ public class Menu implements IMenu{
      * Recua no menu
      * @return this
      */
-    public Menu back(){
+    public GestVendasView back(){
         if (this.prev.size() > 0) {
             this.menu = this.prev.pop();
             this.correctMenu();
@@ -410,7 +410,7 @@ public class Menu implements IMenu{
         }
     }
 
-    private Menu selectOption(int i){
+    private GestVendasView selectOption(int i){
         if (this.options.size() > i - 1) {
             this.prev.push(this.menu);
             this.menu = this.options.get(i - 1);

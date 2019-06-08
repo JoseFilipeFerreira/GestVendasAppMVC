@@ -4,7 +4,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 
-public interface IMenu {
+public interface IGestVendasView {
 
     enum MenuInd {
         Initial,
@@ -61,13 +61,13 @@ public interface IMenu {
      * Lê o input do utilizador e altera o menu onde se está
      * @return this
      */
-    Menu parser();
+    GestVendasView parser();
 
     /**
      * Recua no menu
      * @return this
      */
-    Menu back();
+    GestVendasView back();
 
     /**
      * Método para mostrar a Querie 1

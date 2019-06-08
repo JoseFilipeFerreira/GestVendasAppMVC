@@ -8,8 +8,7 @@ import Model.GestVendasModel;
 import Model.IGestVendasModel;
 import Utils.Crono;
 import Utils.ICrono;
-import View.IMenu;
-import View.Menu;
+import View.IGestVendasView;
 
 import java.io.IOException;
 import java.util.*;
@@ -17,24 +16,36 @@ import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
-public class Controller implements IController{
-    private final IMenu menu;
+public class GestVendasController implements IGestVendasController {
+    private IGestVendasView menu;
     private IGestVendasModel model;
     private final ICrono crono;
 
     /**
-     * Construtor para a classe Controller
-     * @param view instancia da View
-     * @param model instancia do Model
+     * Construtor para a classe GestVendasController
      */
-    public Controller(Menu view, GestVendasModel model) {
-        this.menu = view;
-        this.model = model;
+    public GestVendasController() {
         this.crono = new Crono();
     }
 
     /**
-     * Método para começar o Controller
+     * Setter para o model
+     * @param model model a utilizar
+     */
+    public void setModel(IGestVendasModel model) {
+        this.model = model;
+    }
+
+    /**
+     * Setter para a View
+     * @param menu View a utilizar
+     */
+    public void setView(IGestVendasView menu) {
+        this.menu = menu;
+    }
+
+    /**
+     * Método para começar o GestVendasController
      */
     public void start(){
         String error = "";
