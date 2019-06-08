@@ -297,7 +297,7 @@ public class Controller {
 
                     for(int filial = 0; filial < this.constantes.numeroFiliais(); filial++) {
                         List<String> tmpCli = new ArrayList<>();
-                        for (int mes = 0; mes < this.constantes.meses(); mes++)
+                        for (int mes = 1; mes <= this.constantes.meses(); mes++)
                             tmpCli.add(cliFilMes.get(filial).get(mes).toString());
                         monthly.add(tmpCli);
                     }
