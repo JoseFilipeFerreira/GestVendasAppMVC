@@ -13,7 +13,7 @@ public class Main {
         crono.start();
         GestVendasModel model = null;
         try {
-            model = new GestVendasModel("db/Clientes.txt", "db/Produtos.txt", "db/Vendas_1M.txt");
+            model = new GestVendasModel("db/configs.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

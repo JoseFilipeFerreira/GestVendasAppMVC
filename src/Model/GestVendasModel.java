@@ -11,10 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GestVendasModel implements Serializable{
-    private String vendasFile;
     private int vendasLidas;
-    private String productFile;
-    private String clientFile;
     private ICatCli catCli;
     private ICatProds catProds;
     private List<IVenda> vendas;
@@ -24,17 +21,43 @@ public class GestVendasModel implements Serializable{
 
     /**
      * Construtuor do Model com toda a informacao necessaria para responder a qualquer pedido
+     * @param configs Ficheiro com as configurações
+     * @throws IOException Exceção se ocorrer erros a ler os ficheiros
+     */
+    public GestVendasModel(String configs) throws IOException{
+        this.constantes = new Constantes(configs);
+        this.catCli = new CatCli(this.constantes.getClients());
+        this.catProds = new CatProds(this.constantes.getProds());
+        this.vendasLidas = 0;
+        List<String> venda = Files
+                .readAllLines(Paths.get(this.constantes.getSales()), StandardCharsets.UTF_8);
+        this.vendasLidas = venda.size();
+        this.vendas = venda
+                .parallelStream()
+                .map(Venda::new)
+                .filter(e -> e.validSale()
+                        && catProds.exists(e.getCodProd())
+                        && catCli.exists(e.getCodCli()))
+                .collect(Collectors
+                        .toList());
+        faturacao = new Faturacao(catProds);
+        this.filiais = new Filial[constantes.numeroFiliais()];
+        for (int i = 0; i < constantes.numeroFiliais(); i++) {
+            this.filiais[i] = new Filial();
+        }
+        this.vendas.forEach(e -> {this.faturacao.update(e); this.filiais[e.getFilial()-1].update(e);});
+    }
+    /**
+     * Construtuor do Model com toda a informacao necessaria para responder a qualquer pedido
      * @param clients Caminho do ficheiro de clientes
      * @param products Caminho do ficheiro de produtos
      * @param sales Caminho do ficheiro de vendas
      * @throws IOException Exceção se ocorrer erros a ler os ficheiros
      */
     public GestVendasModel(String clients, String products, String sales) throws IOException{
+        this.constantes = new Constantes("db/configs.txt");
         this.catCli = new CatCli(clients);
-        this.clientFile = clients;
         this.catProds = new CatProds(products);
-        this.productFile = products;
-        this.constantes = new Constantes();
         this.vendasLidas = 0;
         List<String> venda = Files
                 .readAllLines(Paths.get(sales), StandardCharsets.UTF_8);
@@ -47,13 +70,44 @@ public class GestVendasModel implements Serializable{
                         && catCli.exists(e.getCodCli()))
                 .collect(Collectors
                         .toList());
-        this.vendasFile = sales;
         faturacao = new Faturacao(catProds);
         this.filiais = new Filial[constantes.numeroFiliais()];
         for (int i = 0; i < constantes.numeroFiliais(); i++) {
             this.filiais[i] = new Filial();
         }
         this.vendas.forEach(e -> {this.faturacao.update(e); this.filiais[e.getFilial()-1].update(e);});
+    }
+
+    /**
+     * @return Número de Filiais atual
+     */
+    public int numeroFiliais() {
+        return this.constantes.numeroFiliais();
+    }
+
+    /**
+     * @return Número de Meses
+     */
+    public int meses() {
+        return this.constantes.meses();
+    }
+
+    /**
+     * Verifica se uma dada filial é válida
+     * @param filial Filial a verificar
+     * @return Se a filial é valida ou não
+     */
+    public boolean filialValida(int filial) {
+        return this.constantes.filialValida(filial);
+    }
+
+    /**
+     * Verifica se um dado mês é valido
+     * @param mes Mês a verificar
+     * @return Se o mês é valido ou não
+     */
+    public boolean mesValido(int mes) {
+        return this.constantes.mesValido(mes);
     }
 
     /**
@@ -81,7 +135,7 @@ public class GestVendasModel implements Serializable{
      * @return Caminho do ficheiro de vendas
      */
     public String getVendasFile() {
-        return this.vendasFile;
+        return this.constantes.getSales();
     }
 
     /**
@@ -89,7 +143,7 @@ public class GestVendasModel implements Serializable{
      * @return Caminho do ficheiro de Produtos
      */
     public String getProductFile() {
-        return this.productFile;
+        return this.constantes.getProds();
     }
 
     /**
@@ -97,7 +151,7 @@ public class GestVendasModel implements Serializable{
      * @return Caminho do ficheiro de Clientes
      */
     public String getClientFile() {
-        return this.clientFile;
+        return this.constantes.getClients();
     }
 
     /**
