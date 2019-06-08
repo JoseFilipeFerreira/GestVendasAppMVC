@@ -30,10 +30,11 @@ public class Benches {
         }
         CatProds finalProd = prod;
         CatCli finalCli = cli;
+
         out.println("BF 1M");
         a.start();
-        List<String> b = readLinesWithBR("db/Vendas_3M.txt");
-        List<IVenda> e = b.parallelStream().map(Venda::new)
+        List<String> b1 = readLinesWithBR("db/Vendas_1M.txt");
+        List<IVenda> e1 = b1.parallelStream().map(Venda::new)
                 .filter(o ->
                         finalProd.exists(o.getCodProd())
                         && finalCli.exists(o.getCodCli()))
@@ -41,52 +42,65 @@ public class Benches {
                         .toList());
         a.stop();
         out.println(a.toString());
-/*
+
+
         out.println("BF 3M");
         a.start();
-        List<String> c = readLinesWithBR("db/Vendas_3M.txt");
-        List<IVenda> e = c.stream().map(Venda::new).collect(Collectors.toList());
-        a.stop();
-        out.println(a.toString());
-         */
-/*
-        out.println("BF 5M");
-        a.start();
-        List<String> d = readLinesWithBR("db/Vendas_5M.txt");
-        List<IVenda> e = d.stream().map(Venda::new).collect(Collectors.toList());
-        a.stop();
-        out.println(a.toString());
- */
-/*
-        out.println("F 1M");
-        a.start();
-        List<String> b = readWithFiles("db/Vendas_3M.txt");
-        List<IVenda> e = b.parallelStream().map(Venda::new).filter(o -> o.validSale()
-                        && finalProd.exists(o.getCodProd())
+        List<String> b2 = readLinesWithBR("db/Vendas_3M.txt");
+        List<IVenda> e2 = b2.parallelStream().map(Venda::new)
+                .filter(o ->
+                        finalProd.exists(o.getCodProd())
                         && finalCli.exists(o.getCodCli()))
                 .collect(Collectors
                         .toList());
         a.stop();
         out.println(a.toString());
-*/
-/*
-        out.println("F 3M");
+
+        out.println("BF 5M");
         a.start();
-        List<String> c = readWithFiles("db/Vendas_3M.txt");
-        List<IVenda> e = c.stream().map(Venda::new).collect(Collectors.toList());
+        List<String> b3 = readLinesWithBR("db/Vendas_5M.txt");
+        List<IVenda> e3 = b2.parallelStream().map(Venda::new)
+                .filter(o ->
+                        finalProd.exists(o.getCodProd())
+                        && finalCli.exists(o.getCodCli()))
+                .collect(Collectors
+                        .toList());
         a.stop();
         out.println(a.toString());
 
- */
-/*
-        out.println("F 5M");
+        out.println("F 1M");
         a.start();
-        List<String> d = readWithFiles("db/Vendas_5M.txt");
-        List<IVenda> e = d.stream().map(Venda::new).collect(Collectors.toList());
+        List<String> b4 = readWithFiles("db/Vendas_1M.txt");
+        List<IVenda> e4 = b4.parallelStream().map(Venda::new).filter(o ->
+                        finalProd.exists(o.getCodProd())
+                        && finalCli.exists(o.getCodCli()))
+                .collect(Collectors
+                        .toList());
         a.stop();
         out.println(a.toString());
- */
-    }
+
+        out.println("F 3M");
+        a.start();
+        List<String> b5 = readWithFiles("db/Vendas_3M.txt");
+        List<IVenda> e5 = b5.parallelStream().map(Venda::new).filter(o ->
+                        finalProd.exists(o.getCodProd())
+                        && finalCli.exists(o.getCodCli()))
+                .collect(Collectors
+                        .toList());
+        a.stop();
+        out.println(a.toString());
+
+        out.println("F 5M");
+        a.start();
+        List<String> b6 = readWithFiles("db/Vendas_5M.txt");
+        List<IVenda> e6 = b6.parallelStream().map(Venda::new).filter(o ->
+                        finalProd.exists(o.getCodProd())
+                        && finalCli.exists(o.getCodCli()))
+                .collect(Collectors
+                        .toList());
+        a.stop();
+        out.println(a.toString());
+   }
 
     public static List<String> readLinesWithBR(String fichtxt) {
         List<String> linhas = new ArrayList<>();
