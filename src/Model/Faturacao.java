@@ -77,7 +77,7 @@ public class Faturacao implements IFaturacao, Serializable {
         return (int) this.faturacao
                 .values()
                 .stream()
-                .filter(e -> !(e.getProdId().equals("")))
+                .filter(IFatura::isFoiComprado)
                 .count();
     }
 
@@ -89,7 +89,7 @@ public class Faturacao implements IFaturacao, Serializable {
         return this.faturacao
                 .values()
                 .stream()
-                .filter(e -> e.getProdId().equals(""))
+                .filter(e -> !e.isFoiComprado())
                 .map(IFatura::getProdId)
                 .sorted()
                 .collect(Collectors.toList());

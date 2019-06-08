@@ -440,7 +440,7 @@ public class Menu implements IMenu{
             case Q3:
                 return "Stats sobre cliente (ano)";
             case Q4:
-                return "Stats sobre produto (ano)";
+                return "Stats sobre produto (mês)";
             case Q5:
                 return "Produtos mais comprados por cliente";
             case Q6:

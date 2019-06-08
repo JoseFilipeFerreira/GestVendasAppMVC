@@ -30,6 +30,12 @@ public interface IFatura {
     Map<Integer, Double> getTotalMensal();
 
     /**
+     * Determina de um produto foi comprado ou não
+     * @return Se o produto foi comprado ou não
+     */
+    boolean isFoiComprado();
+
+    /**
      * Getter do ID do produto ao que a fatura se refere
      * @return ID do produto
      */
