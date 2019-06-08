@@ -3,6 +3,7 @@ package Model;
 import java.io.Serializable;
 
 public class Venda implements IVenda, Serializable {
+    private static final long serialVersionUID = -5595223154239308735L;
     private String codCli;
     private String codProd;
     private double unitPrice;

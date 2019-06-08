@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GestVendasModel implements Serializable, IGestVendasModel{
+    private static final long serialVersionUID = 6630744916568124368L;
     private int vendasLidas;
     private ICatCli catCli;
     private ICatProds catProds;
@@ -33,8 +34,11 @@ public class GestVendasModel implements Serializable, IGestVendasModel{
         this.catCli = new CatCli(this.constantes.getClients());
         this.catProds = new CatProds(this.constantes.getProds());
         this.vendasLidas = 0;
-        List<String> venda = Files
-                .readAllLines(Paths.get(this.constantes.getSales()), StandardCharsets.UTF_8);
+        List<String> venda = new ArrayList<>();
+        BufferedReader inFile = new BufferedReader(new FileReader(this.constantes.getSales()));
+        String linha;
+        while((linha = inFile.readLine()) != null)
+                venda.add(linha);
         this.vendasLidas = venda.size();
         this.vendas = venda
                 .parallelStream()
@@ -50,7 +54,7 @@ public class GestVendasModel implements Serializable, IGestVendasModel{
             this.filiais[i] = new Filial();
         }
         this.vendas.forEach(e -> {this.faturacao.update(e); this.filiais[e.getFilial()-1].update(e);});
-        this.time.start();
+        this.time.stop();
     }
     /**
      * Construtuor do Model com toda a informacao necessaria para responder a qualquer pedido

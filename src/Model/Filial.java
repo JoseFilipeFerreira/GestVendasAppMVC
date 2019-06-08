@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Filial implements IFilial, Serializable {
+    private static final long serialVersionUID = 865079364397565662L;
     private Map<String, List<IVenda>> infoClients;
     private Map<String, List<IVenda>> infoProds;
 
@@ -54,7 +55,7 @@ public class Filial implements IFilial, Serializable {
                 .entrySet()
                 .stream()
                 .map(e -> new AbstractMap
-                        .SimpleEntry<String, Double>(e.getKey(),
+                        .SimpleEntry<>(e.getKey(),
                         e.getValue()
                                 .stream()
                                 .mapToDouble(IVenda::totalSale)

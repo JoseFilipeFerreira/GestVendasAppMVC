@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Fatura implements IFatura, Serializable {
+    private static final long serialVersionUID = 390685106496680839L;
     private String prodId;
     private int[][] nVendas; //mes filial
     private double[][] total; //mes filial

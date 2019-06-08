@@ -3,6 +3,7 @@ package Model;
 import java.io.Serializable;
 
 public class Product implements IProduct, Serializable {
+    private static final long serialVersionUID = -6767200051690149L;
     private String id;
 
     /**

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
  * Representa toda a faturação do sistema
  */
 public class Faturacao implements IFaturacao, Serializable {
+    private static final long serialVersionUID = 3685986535800590995L;
     private Map<String, IFatura> faturacao;
 
     /**

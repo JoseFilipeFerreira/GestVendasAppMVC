@@ -1,10 +1,13 @@
 package Utils;
 
-import static java.lang.System.nanoTime;
-public class Crono implements ICrono{
+import java.io.Serializable;
 
-  private long inicio;
-  private long fim;
+import static java.lang.System.nanoTime;
+public class Crono implements ICrono, Serializable {
+
+    private static final long serialVersionUID = -4037495480742779502L;
+    private long inicio;
+    private long fim;
 
     /**
      * construtor da classe crono
@@ -18,7 +21,8 @@ public class Crono implements ICrono{
    * Método para começar a cronometrar o tempo
    */
   public void start() {
-      this.fim = 0L; this.inicio = nanoTime();
+      this.fim = 0L;
+      this.inicio = nanoTime();
   }
 
   /**

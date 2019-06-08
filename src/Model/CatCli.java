@@ -5,16 +5,13 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.System.out;
-
 public class CatCli implements ICatCli, Serializable {
+    private static final long serialVersionUID = -2680532270023415383L;
     private Map<String, IClient> catCli;
 
     /**
@@ -26,6 +23,7 @@ public class CatCli implements ICatCli, Serializable {
         this.catCli = clients
                 .stream()
                 .map(Client::new)
+                .filter(IClient::verifyClient)
                 .collect(Collectors
                         .toMap(IClient::getId, Function.identity()));
     }

@@ -5,19 +5,16 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.System.*;
-
 /**
  * Classe referente ao Catalogo de Produtos
  */
 public class CatProds implements ICatProds, Serializable {
+    private static final long serialVersionUID = -8316683288546563556L;
     private Map<String, IProduct> catProds;
 
     /**
@@ -29,6 +26,7 @@ public class CatProds implements ICatProds, Serializable {
         this.catProds = produtos
                 .stream()
                 .map(Product::new)
+                .filter(IProduct::verifyProduct)
                 .collect(Collectors
                         .toMap(IProduct::getId, Function.identity()));
     }

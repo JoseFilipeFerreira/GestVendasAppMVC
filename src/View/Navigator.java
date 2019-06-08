@@ -79,7 +79,7 @@ public class Navigator<T> implements INavigator{
         IStringBetter senter = new StringBetter("\n");
         int pos, r = 0;
         builder.setLength(0);
-        builder.append("Total: " + this.strings.size()).append("\n");
+        builder.append("Total: ").append(this.strings.size()).append("\n");
         for(int i = this.pageSize * this.page; i < this.pageSize * (this.page + 1); i++){
             for(int j = 0; j < this.nCols && j + i * this.nCols < this.strings.size(); j++){
                 pos = j + i * this.nCols;

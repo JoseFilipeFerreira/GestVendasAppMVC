@@ -3,6 +3,7 @@ package Model;
 import java.io.Serializable;
 
 public class Client implements IClient, Serializable {
+    private static final long serialVersionUID = -6507860722748189444L;
     private String id;
 
     /**

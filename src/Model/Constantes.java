@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Constantes implements Serializable, IConstantes{
+    private static final long serialVersionUID = -7078102694050931882L;
     private int numeroFiliais;
     private int meses;
     private String prods;
