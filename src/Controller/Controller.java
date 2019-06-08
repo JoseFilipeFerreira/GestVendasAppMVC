@@ -4,7 +4,6 @@ import Exceptions.InvalidClientException;
 import Exceptions.InvalidFilialException;
 import Exceptions.InvalidProductExecption;
 import Exceptions.MesInvalidoException;
-import Model.Constantes;
 import Model.GestVendasModel;
 import Utils.Crono;
 import View.Menu;
@@ -18,13 +17,11 @@ import static java.lang.System.out;
 public class Controller {
     private final Menu menu;
     private GestVendasModel model;
-    private final Crono cronoLoad;
     private final Crono crono;
 
-    public Controller(Menu view, GestVendasModel model, Crono crono) {
+    public Controller(Menu view, GestVendasModel model) {
         this.menu = view;
         this.model = model;
-        this.cronoLoad = crono;
         this.crono = new Crono();
     }
 
@@ -244,7 +241,7 @@ public class Controller {
                     this.crono.stop();
 
                     List<String> q11 = new ArrayList<>();
-                    q11.add(this.cronoLoad.toString());
+                    q11.add(this.model.time());
                     q11.add(fileVendas);
                     q11.add(fileProdutos);
                     q11.add(fileCli);
@@ -323,7 +320,7 @@ public class Controller {
                     try {
                         String fName = this.menu.getInputString(error, "Caminho para o ficheiro para carregar:");
                         this.crono.start();
-                        this.model.read(fName);
+                        this.model = GestVendasModel.read(fName);
                         this.crono.stop();
 
                         this.menu.showLoad(fName, this.crono.toString());
@@ -338,8 +335,6 @@ public class Controller {
                         out.println(menu);
                         menu.parser();
             }
-
         }
-
     }
 }

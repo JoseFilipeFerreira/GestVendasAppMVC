@@ -8,17 +8,14 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
 
-        Crono crono = new Crono();
         Menu view = new Menu();
-        crono.start();
         GestVendasModel model = null;
         try {
             model = new GestVendasModel("db/configs.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        crono.stop();
-        Controller controller = new Controller(view, model, crono);
+        Controller controller = new Controller(view, model);
 
         controller.start();
     }
