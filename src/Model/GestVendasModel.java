@@ -1,6 +1,7 @@
 package Model;
 
 import Exceptions.*;
+import Utils.Crono;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -10,7 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GestVendasModel implements Serializable{
+public class GestVendasModel implements Serializable, IGestVendasModel{
     private int vendasLidas;
     private ICatCli catCli;
     private ICatProds catProds;
@@ -18,6 +19,7 @@ public class GestVendasModel implements Serializable{
     private IFaturacao faturacao;
     private IFilial[] filiais;
     private Constantes constantes;
+    private final Crono time;
 
     /**
      * Construtuor do Model com toda a informacao necessaria para responder a qualquer pedido
@@ -26,6 +28,8 @@ public class GestVendasModel implements Serializable{
      */
     public GestVendasModel(String configs) throws IOException{
         this.constantes = new Constantes(configs);
+        this.time = new Crono();
+        this.time.start();
         this.catCli = new CatCli(this.constantes.getClients());
         this.catProds = new CatProds(this.constantes.getProds());
         this.vendasLidas = 0;
@@ -46,6 +50,7 @@ public class GestVendasModel implements Serializable{
             this.filiais[i] = new Filial();
         }
         this.vendas.forEach(e -> {this.faturacao.update(e); this.filiais[e.getFilial()-1].update(e);});
+        this.time.start();
     }
     /**
      * Construtuor do Model com toda a informacao necessaria para responder a qualquer pedido
@@ -56,6 +61,8 @@ public class GestVendasModel implements Serializable{
      */
     public GestVendasModel(String clients, String products, String sales) throws IOException{
         this.constantes = new Constantes("db/configs.txt");
+        this.time = new Crono();
+        this.time.start();
         this.catCli = new CatCli(clients);
         this.catProds = new CatProds(products);
         this.vendasLidas = 0;
@@ -76,6 +83,14 @@ public class GestVendasModel implements Serializable{
             this.filiais[i] = new Filial();
         }
         this.vendas.forEach(e -> {this.faturacao.update(e); this.filiais[e.getFilial()-1].update(e);});
+        this.time.stop();
+    }
+
+    /**
+     * @return Tempo que demorou a ser inicializado o model
+     */
+    public String time() {
+        return this.time.toString();
     }
 
     /**
@@ -90,24 +105,6 @@ public class GestVendasModel implements Serializable{
      */
     public int meses() {
         return this.constantes.meses();
-    }
-
-    /**
-     * Verifica se uma dada filial é válida
-     * @param filial Filial a verificar
-     * @return Se a filial é valida ou não
-     */
-    public boolean filialValida(int filial) {
-        return this.constantes.filialValida(filial);
-    }
-
-    /**
-     * Verifica se um dado mês é valido
-     * @param mes Mês a verificar
-     * @return Se o mês é valido ou não
-     */
-    public boolean mesValido(int mes) {
-        return this.constantes.mesValido(mes);
     }
 
     /**

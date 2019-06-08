@@ -5,6 +5,7 @@ import Exceptions.InvalidFilialException;
 import Exceptions.InvalidProductExecption;
 import Exceptions.MesInvalidoException;
 import Model.GestVendasModel;
+import Model.IGestVendasModel;
 import Utils.Crono;
 import View.Menu;
 
@@ -16,7 +17,7 @@ import static java.lang.System.out;
 
 public class Controller {
     private final Menu menu;
-    private GestVendasModel model;
+    private IGestVendasModel model;
     private final Crono crono;
 
     public Controller(Menu view, GestVendasModel model) {
