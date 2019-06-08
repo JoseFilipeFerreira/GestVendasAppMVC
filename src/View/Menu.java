@@ -254,6 +254,24 @@ public class Menu implements IMenu{
         new Scanner(System.in).nextLine();
     }
 
+    public void showSave(String fName, String time){
+        this.displayMenuHeader(time);
+        out.println();
+        out.println("Estado guardado com sucesso!");
+        out.println(fName);
+
+        new Scanner(System.in).nextLine();
+    }
+
+    public void showLoad(String fName, String time){
+        this.displayMenuHeader(time);
+        out.println();
+        out.println("Estado Carregado com sucesso!");
+        out.println(fName);
+
+        new Scanner(System.in).nextLine();
+    }
+
     private <T> Table defaultTable(List <String> colLabl, List<List <T>> vals){
         List<String> linLabl = new ArrayList<>();
         for(int i = 0; i < vals.size(); i++)

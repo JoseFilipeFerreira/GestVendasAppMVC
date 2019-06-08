@@ -9,6 +9,7 @@ import Model.GestVendasModel;
 import Utils.Crono;
 import View.Menu;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ import static java.lang.System.out;
 
 public class Controller {
     private final Menu menu;
-    private final GestVendasModel model;
+    private GestVendasModel model;
     private final Crono cronoLoad;
     private final Crono crono;
     private final Constantes constantes;
@@ -304,6 +305,35 @@ public class Controller {
                     this.menu.showQ12(this.crono.toString(), monthly, this.constantes.meses(), this.constantes.numeroFiliais());
 
                     this.menu.back();
+                    break;
+
+                case Save:
+                    try {
+                        String fName = this.menu.getInputString(error, "Caminho para o ficheiro para guardar:");
+                        this.crono.start();
+                        this.model.save(fName);
+                        this.crono.stop();
+
+                        this.menu.showSave(fName, this.crono.toString());
+
+                        this.menu.back();
+                        error = "";
+                    }
+                    catch (IOException e) {error = "Ficheiro Inválido";}
+                    break;
+                case Load:
+                    try {
+                        String fName = this.menu.getInputString(error, "Caminho para o ficheiro para carregar:");
+                        this.crono.start();
+                        this.model.read(fName);
+                        this.crono.stop();
+
+                        this.menu.showLoad(fName, this.crono.toString());
+
+                        this.menu.back();
+                        error = "";
+                    }
+                    catch (IOException | ClassNotFoundException e) {error = "Ficheiro Inválido";}
                     break;
 
                     default:
