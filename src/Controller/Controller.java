@@ -20,14 +20,12 @@ public class Controller {
     private GestVendasModel model;
     private final Crono cronoLoad;
     private final Crono crono;
-    private final Constantes constantes;
 
     public Controller(Menu view, GestVendasModel model, Crono crono) {
         this.menu = view;
         this.model = model;
         this.cronoLoad = crono;
         this.crono = new Crono();
-        this.constantes = new Constantes();
     }
 
     public void start(){
@@ -47,10 +45,10 @@ public class Controller {
                     try {
                         int mesSales = this.menu.getInputInt(
                                 error,
-                                "Mês a pesquisar [1-" + this.constantes.meses() + "]:");
+                                "Mês a pesquisar [1-" + this.model.meses() + "]:");
                         int filialSales = this.menu.getInputInt(
                                 error,
-                                "Filial a pesquisar [1-" + this.constantes.numeroFiliais() + "] [0 para o total]:");
+                                "Filial a pesquisar [1-" + this.model.numeroFiliais() + "] [0 para o total]:");
                         Map.Entry<Integer, Integer> tSales;
                         this.crono.start();
                         if(filialSales == 0)
@@ -72,7 +70,7 @@ public class Controller {
                         String cliSStats = this.menu.getInputString(error, "Cliente a pesquisar:");
                         int mesSStats = this.menu.getInputInt(
                                 error,
-                                "Mês a pesquisar [1-" + this.constantes.meses() + "]:");
+                                "Mês a pesquisar [1-" + this.model.meses() + "]:");
                         this.crono.start();
                         Map.Entry<Integer, Map.Entry<Integer, Double>> cliStats = this.model.statsClientes(cliSStats, mesSStats);
                         this.crono.stop();
@@ -92,7 +90,7 @@ public class Controller {
                         String prodSStats = this.menu.getInputString(error, "Produto a pesquisar:");
                         int mesSStats = this.menu.getInputInt(
                                 error,
-                                "Mês a pesquisar [1-" + this.constantes.meses() + "]:");
+                                "Mês a pesquisar [1-" + this.model.meses() + "]:");
                         this.crono.start();
                         Map.Entry<Integer, Map.Entry<Integer, Double>> prodStats = this.model.statsProdutos(prodSStats, mesSStats);
                         this.crono.stop();
@@ -155,7 +153,7 @@ public class Controller {
                     try{
                         int filN = this.menu.getInputInt(
                                 error,
-                                "Inserir Filial [1-" + this.constantes.numeroFiliais() + "]:");
+                                "Inserir Filial [1-" + this.model.numeroFiliais() + "]:");
                         this.crono.start();
                         List <String> clis = this.model.melhoresClientesPorFilial(filN);
                         this.crono.stop();
@@ -217,7 +215,7 @@ public class Controller {
                         int mes = this.menu.getInputInt(error, "Mês a pesquisar:");
                         int filial = this.menu.getInputInt(
                                 error,
-                                "Filial a pesquisar [1-" + this.constantes.numeroFiliais() + "]:");
+                                "Filial a pesquisar [1-" + this.model.numeroFiliais() + "]:");
 
                         this.crono.start();
                         Map<String, Double> fatTotal = this.model.faturacaoProd(mes, filial);
@@ -274,7 +272,7 @@ public class Controller {
                     Map<Integer, Integer> monthSales = this.model.vendasMensais();
                     List<Map<Integer, Double>> fatPerFilial = new ArrayList<>();
                     List<Map<Integer, Integer>> cliFilMes = new ArrayList<>();
-                    for(int filial = 1; filial <= this.constantes.numeroFiliais(); filial++)
+                    for(int filial = 1; filial <= this.model.numeroFiliais(); filial++)
                         try {
                             fatPerFilial.add(this.model.faturacaoPorFilial(filial));
                             cliFilMes.add(this.model.clientesPorFilial(filial));
@@ -284,25 +282,25 @@ public class Controller {
                     List<List<String>> monthly = new ArrayList<>();
 
                     List<String> monthSalesList = new ArrayList<>();
-                    for(int mes = 1; mes <= this.constantes.meses(); mes++)
+                    for(int mes = 1; mes <= this.model.meses(); mes++)
                         monthSalesList.add(monthSales.get(mes).toString());
                     monthly.add(monthSalesList);
 
-                    for(int filial = 0; filial < this.constantes.numeroFiliais(); filial++) {
+                    for(int filial = 0; filial < this.model.numeroFiliais(); filial++) {
                         List<String> tmpFat = new ArrayList<>();
-                        for (int mes = 0; mes < this.constantes.meses(); mes++)
+                        for (int mes = 0; mes < this.model.meses(); mes++)
                             tmpFat.add(String.format("%.2f", fatPerFilial.get(filial).get(mes)));
                         monthly.add(tmpFat);
                     }
 
-                    for(int filial = 0; filial < this.constantes.numeroFiliais(); filial++) {
+                    for(int filial = 0; filial < this.model.numeroFiliais(); filial++) {
                         List<String> tmpCli = new ArrayList<>();
-                        for (int mes = 1; mes <= this.constantes.meses(); mes++)
+                        for (int mes = 1; mes <= this.model.meses(); mes++)
                             tmpCli.add(cliFilMes.get(filial).get(mes).toString());
                         monthly.add(tmpCli);
                     }
 
-                    this.menu.showQ12(this.crono.toString(), monthly, this.constantes.meses(), this.constantes.numeroFiliais());
+                    this.menu.showQ12(this.crono.toString(), monthly, this.model.meses(), this.model.numeroFiliais());
 
                     this.menu.back();
                     break;
