@@ -146,7 +146,7 @@ public interface IMenu {
      * @param filial filial pesquisada
      * @param time tempo que demorou a querie
      */
-    void showQ10(Map<String, Double> fatTotal, int mes, int filial, String time);
+    void showQ10(List<Map.Entry<String, Double>> fatTotal, int mes, int filial, String time);
 
     /**
      * Método para mostrar a Querie 1.1

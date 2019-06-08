@@ -242,7 +242,13 @@ public class Controller implements IController{
                         Map<String, Double> fatTotal = this.model.faturacaoProd(mes, filial);
                         this.crono.stop();
 
-                        this.menu.showQ10(fatTotal, mes, filial, this.crono.toString());
+                        this.menu.showQ10(
+                                fatTotal.entrySet().stream()
+                                        .sorted(Map.Entry.comparingByKey())
+                                        .collect(Collectors.toList()),
+                                mes,
+                                filial,
+                                this.crono.toString());
 
                         error = "";
 

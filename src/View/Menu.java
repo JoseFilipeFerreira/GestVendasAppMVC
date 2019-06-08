@@ -275,10 +275,10 @@ public class Menu implements IMenu{
      * @param filial filial pesquisada
      * @param time tempo que demorou a querie
      */
-    public void showQ10(Map<String, Double> fatTotal, int mes, int filial, String time){
+    public void showQ10(List<Map.Entry<String, Double>> fatTotal, int mes, int filial, String time){
         List<String> lines = new ArrayList<>();
-        for (String key : fatTotal.keySet())
-            lines.add(key + " [" + String.format("%.2f", fatTotal.get(key)) + "]");
+        for (Map.Entry<String, Double> line : fatTotal)
+            lines.add(line.getKey() + " [" + String.format("%.2f", line.getValue()) + "]");
 
         INavigator nav = new Navigator<>(lines);
         this.menuNavigator(nav, time, "Faturação total no mês [" + mes + "] na filial [" + filial + "]:");
