@@ -1,7 +1,7 @@
 import Controller.Controller;
+import Controller.IController;
 import Model.GestVendasModel;
 import View.Menu;
-import Utils.Crono;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Controller controller = new Controller(view, model);
+        IController controller = new Controller(view, model);
 
         controller.start();
     }

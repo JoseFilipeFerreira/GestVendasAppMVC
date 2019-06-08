@@ -1,5 +1,5 @@
 package View;
 
-public interface ITable {
+public interface ITable<T> {
     String toString();
 }

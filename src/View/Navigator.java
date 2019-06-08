@@ -1,5 +1,6 @@
 package View;
 
+import Utils.IStringBetter;
 import Utils.StringBetter;
 import Utils.Terminal;
 
@@ -17,6 +18,10 @@ public class Navigator<T> implements INavigator{
     private int maxPrint;
     private final Terminal term;
 
+    /**
+     * Construtor para a classe
+     * @param strings Lista de valores a respresentar
+     */
     public Navigator(List<T> strings) {
         this.builder = new StringBuilder();
         this.strings = strings;
@@ -30,10 +35,16 @@ public class Navigator<T> implements INavigator{
         this.page = 0;
     }
 
+    /**
+     * Método para avançar para a próxima página
+     */
     public void next() {
         this.page = (page + 1 <= nPages)?page + 1 : page;
     }
 
+    /**
+     * Método para ir para a página anterior
+     */
     public void previous() {
         this.page = (page - 1 >= 0)?page -1 : page;
     }
@@ -64,8 +75,8 @@ public class Navigator<T> implements INavigator{
     @Override
     public String toString(){
         this.update();
-        StringBetter spac = new StringBetter(" ");
-        StringBetter senter = new StringBetter("\n");
+        IStringBetter spac = new StringBetter(" ");
+        IStringBetter senter = new StringBetter("\n");
         int pos, r = 0;
         builder.setLength(0);
         builder.append("Total: " + this.strings.size()).append("\n");

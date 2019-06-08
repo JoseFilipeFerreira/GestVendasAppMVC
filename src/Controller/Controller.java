@@ -7,6 +7,8 @@ import Exceptions.MesInvalidoException;
 import Model.GestVendasModel;
 import Model.IGestVendasModel;
 import Utils.Crono;
+import Utils.ICrono;
+import View.IMenu;
 import View.Menu;
 
 import java.io.IOException;
@@ -15,17 +17,25 @@ import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
-public class Controller {
-    private final Menu menu;
+public class Controller implements IController{
+    private final IMenu menu;
     private IGestVendasModel model;
-    private final Crono crono;
+    private final ICrono crono;
 
+    /**
+     * Construtor para a classe Controller
+     * @param view instancia da View
+     * @param model instancia do Model
+     */
     public Controller(Menu view, GestVendasModel model) {
         this.menu = view;
         this.model = model;
         this.crono = new Crono();
     }
 
+    /**
+     * Método para começar o Controller
+     */
     public void start(){
         String error = "";
         while(this.menu.getRun()) {
@@ -66,14 +76,27 @@ public class Controller {
                 case Q3:
                     try {
                         String cliSStats = this.menu.getInputString(error, "Cliente a pesquisar:");
-                        int mesSStats = this.menu.getInputInt(
-                                error,
-                                "Mês a pesquisar [1-" + this.model.meses() + "]:");
+                        List<Map.Entry<Integer, Map.Entry<Integer, Double>>> cliStats = new ArrayList<>();
                         this.crono.start();
-                        Map.Entry<Integer, Map.Entry<Integer, Double>> cliStats = this.model.statsClientes(cliSStats, mesSStats);
+                        for(int mes = 1; mes <= this.model.meses(); mes++)
+                             cliStats.add(this.model.statsClientes(cliSStats, mes));
                         this.crono.stop();
 
-                        this.menu.showQ3(cliSStats, mesSStats, cliStats, this.crono.toString());
+                        List<String> l1 = new ArrayList<>();
+                        List<String> l2 = new ArrayList<>();
+                        List<String> l3 = new ArrayList<>();
+                        for(int mes = 0; mes < this.model.meses(); mes++){
+                            l1.add(cliStats.get(mes).getKey().toString());
+                            l2.add(cliStats.get(mes).getValue().getKey().toString());
+                            l3.add(String.format("%.2f", cliStats.get(mes).getValue().getValue()));
+                        }
+
+                        List<List<String>> tab = new ArrayList<>();
+                        tab.add(l1);
+                        tab.add(l2);
+                        tab.add(l3);
+
+                        this.menu.showQ3(cliSStats, this.model.meses(), tab, this.crono.toString());
 
                         this.menu.back();
                         error = "";

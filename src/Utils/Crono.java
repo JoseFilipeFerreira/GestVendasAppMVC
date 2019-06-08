@@ -6,19 +6,29 @@ public class Crono implements ICrono{
   private long inicio;
   private long fim;
 
-    public Crono() {
-        this.inicio = 0;
-        this.fim = 0;
-    }
+    /**
+     * construtor da classe crono
+     */
+  public Crono() {
+      this.inicio = 0;
+      this.fim = 0;
+  }
 
-    public void start() {
+  /**
+   * Método para começar a cronometrar o tempo
+   */
+  public void start() {
       this.fim = 0L; this.inicio = nanoTime();
   }
-  
+
+  /**
+   * Método para terminar a contagem do tempo
+   * @return tempo decorrido desde o último start em milisegundos
+   */
   public double stop() {
       this.fim = nanoTime();
       long elapsedTime = this.fim - this.inicio;
-      return elapsedTime / 1.0E09;
+      return elapsedTime / 1.0E06;
   }
 
   @Override

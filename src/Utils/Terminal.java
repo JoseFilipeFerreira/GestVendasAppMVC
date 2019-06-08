@@ -8,10 +8,16 @@ public class Terminal implements ITerminal{
     private int columns;
     private int lines;
 
+    /**
+     * construtor da classe Terminal
+     */
     public Terminal() {
         this.update();
     }
 
+    /**
+     * Atualiza o tamanho do terminal
+     */
     public void update() {
         StringBuilder rColumns = new StringBuilder();
         try {
@@ -59,10 +65,18 @@ public class Terminal implements ITerminal{
         in.close();
     }
 
+    /**
+     * obter numero de colunas do terminal
+     * @return número de colunas do terminal
+     */
     public int getColumns() {
         return columns;
     }
 
+    /**
+     * obter numero de linhas do terminal
+     * @return número de linhas do terminal
+     */
     public int getLines() {
         return lines;
     }

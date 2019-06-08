@@ -1,5 +1,6 @@
 package View;
 
+import Utils.IStringBetter;
 import Utils.StringBetter;
 
 import java.util.List;
@@ -10,6 +11,12 @@ public class Table<T> implements ITable{
     private final List<List<T>> iT;
     private final StringBuilder builder;
 
+    /**
+     * Construtor da classe
+     * @param iT Matriz de elementos a representar
+     * @param linLabel Lista de etiquetas das linhas
+     * @param colLabel Lista de etiquetas das colunas
+     */
     public Table(List<List<T>> iT, List<String> linLabel, List<String> colLabel) {
         this.linLabl = linLabel;
         this.colLabl = colLabel;
@@ -17,8 +24,13 @@ public class Table<T> implements ITable{
         this.builder = new StringBuilder();
     }
 
+
+    /**
+     * Imprime uma linha que separa duas linhas da tabela
+     * @param sizeCols um array com o tamanho de cada coluna
+     */
     private void printSeparatorLine(int[] sizeCols) {
-        StringBetter sif = new StringBetter("-");
+        IStringBetter sif = new StringBetter("-");
         for (int j = 0; j <= sizeCols.length - 1; j++)
             this.builder.append("+").append(sif.repeat(sizeCols[j]).toString());
         this.builder.append("+\n");
@@ -29,7 +41,7 @@ public class Table<T> implements ITable{
         builder.setLength(0);
         int col = this.colLabl.size();
         int lin = this.linLabl.size();
-        StringBetter spac = new StringBetter(" ");
+        IStringBetter spac = new StringBetter(" ");
 
         /*find appropriate size for columns*/
         int[] sizeCols = new int[col + 1];
