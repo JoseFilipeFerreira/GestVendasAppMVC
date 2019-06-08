@@ -405,7 +405,6 @@ public class Menu implements IMenu{
                     nav.previous();
                     break;
                 case 'b':
-                    this.back();
                     return;
             }
         }

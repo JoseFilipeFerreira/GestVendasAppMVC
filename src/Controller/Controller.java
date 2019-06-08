@@ -45,7 +45,8 @@ public class Controller implements IController{
                     List <String> prodsNComprados = this.model.listaDeProdutosNaoComprados();
                     this.crono.stop();
                     this.menu.showQ1(prodsNComprados, this.crono.toString());
-                    
+
+                    this.menu.back();
                     error = "";
                     break;
 
@@ -113,7 +114,8 @@ public class Controller implements IController{
                                 error,
                                 "Mês a pesquisar [1-" + this.model.meses() + "]:");
                         this.crono.start();
-                        Map.Entry<Integer, Map.Entry<Integer, Double>> prodStats = this.model.statsProdutos(prodSStats, mesSStats);
+                        Map.Entry<Integer, Map.Entry<Integer, Double>>
+                                prodStats = this.model.statsProdutos(prodSStats, mesSStats);
                         this.crono.stop();
 
                         this.menu.showQ4(prodSStats, mesSStats, prodStats, this.crono.toString());
@@ -141,6 +143,7 @@ public class Controller implements IController{
                                 clientProd,
                                 this.crono.toString());
 
+                        this.menu.back();
                         error = "";
                     }
                     catch (InvalidClientException e) { error = "Invalid Client"; }
@@ -250,6 +253,7 @@ public class Controller implements IController{
                                 filial,
                                 this.crono.toString());
 
+                        this.menu.back();
                         error = "";
 
                     }
