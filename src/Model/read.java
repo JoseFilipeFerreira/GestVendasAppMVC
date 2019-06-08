@@ -1,6 +1,5 @@
 package Model;
 
-import Model.*;
 import Utils.Crono;
 
 import java.io.BufferedReader;
@@ -66,7 +65,7 @@ public class read {
         List<IVenda> linhasR = linhas
                 .stream()
                 .map(Venda::new)
-                .filter(Venda::validSale)
+                //.filter(Venda::validSale)
                 .collect(Collectors
                         .toList());
         out.println(linhasR.size());

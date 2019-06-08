@@ -18,7 +18,7 @@ public class GestVendasModel implements Serializable, IGestVendasModel{
     private List<IVenda> vendas;
     private IFaturacao faturacao;
     private IFilial[] filiais;
-    private Constantes constantes;
+    private IConstantes constantes;
     private final Crono time;
 
     /**
@@ -39,7 +39,7 @@ public class GestVendasModel implements Serializable, IGestVendasModel{
         this.vendas = venda
                 .parallelStream()
                 .map(Venda::new)
-                .filter(e -> e.validSale()
+                .filter(e -> e.validSale(this.constantes)
                         && catProds.exists(e.getCodProd())
                         && catCli.exists(e.getCodCli()))
                 .collect(Collectors
@@ -72,7 +72,7 @@ public class GestVendasModel implements Serializable, IGestVendasModel{
         this.vendas = venda
                 .parallelStream()
                 .map(Venda::new)
-                .filter(e -> e.validSale()
+                .filter(e -> e.validSale(this.constantes)
                         && catProds.exists(e.getCodProd())
                         && catCli.exists(e.getCodCli()))
                 .collect(Collectors
@@ -306,9 +306,11 @@ public class GestVendasModel implements Serializable, IGestVendasModel{
         double total = 0;
         for(IFilial a : this.filiais) {
             Map.Entry<Set<String>, Map.Entry<Integer,Double>> o = a.statsCliente(clientID, mes);
-            ree.addAll(o.getKey());
-            vezes += o.getValue().getKey();
-            total += o.getValue().getValue();
+            if(o != null) {
+                ree.addAll(o.getKey());
+                vezes += o.getValue().getKey();
+                total += o.getValue().getValue();
+            }
         }
         return new AbstractMap.SimpleEntry<>(ree.size(), new AbstractMap.SimpleEntry<>(vezes, total));
     }
@@ -333,9 +335,11 @@ public class GestVendasModel implements Serializable, IGestVendasModel{
         double total = 0;
         for(IFilial a : this.filiais) {
             Map.Entry<Set<String>, Map.Entry<Integer,Double>> o = a.statsProduto(productID, mes);
-            ree.addAll(o.getKey());
-            vezes += o.getValue().getKey();
-            total += o.getValue().getValue();
+            if(o != null) {
+                ree.addAll(o.getKey());
+                vezes += o.getValue().getKey();
+                total += o.getValue().getValue();
+            }
         }
         return new AbstractMap.SimpleEntry<>(ree.size(), new AbstractMap.SimpleEntry<>(vezes, total));
     }
@@ -426,7 +430,9 @@ public class GestVendasModel implements Serializable, IGestVendasModel{
     public List<String> clientesComMaisDiversidade() {
         List<Map<String, Set<String>>> a = new ArrayList<>();
         for(IFilial x : this.filiais) {
-            a.add(x.maisDiversidadeDeProdutos());
+            Map<String, Set<String>> o = x.maisDiversidadeDeProdutos();
+            if(o != null)
+                a.add(o);
         }
         return a.stream()
                 .flatMap(e -> e.entrySet().stream())
@@ -455,9 +461,9 @@ public class GestVendasModel implements Serializable, IGestVendasModel{
         if(!this.catProds.exists(prodID))
             throw new InvalidProductExecption();
         return Arrays.stream(filiais)
-                .flatMap(e -> e.clientesQueMaisCompraram(prodID)
-                        .entrySet()
-                        .stream())
+                .map(e -> e.clientesQueMaisCompraram(prodID))
+                .filter(Objects::nonNull)
+                .flatMap(e -> e.entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Double::sum))
                 .entrySet()
                 .stream()
@@ -507,6 +513,8 @@ public class GestVendasModel implements Serializable, IGestVendasModel{
      * Carrega o Model de um ficheiro de ObjectStream
      * @param fName Caminho do ficheiro a carregar
      * @return Modelo lido
+     * @throws IOException Erro a ler do ficheiro
+     * @throws ClassNotFoundException O ficheiro lido é invalido
      */
     public static GestVendasModel read(String fName) throws IOException, ClassNotFoundException {
         FileInputStream r = new FileInputStream(fName);

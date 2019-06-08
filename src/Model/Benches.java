@@ -34,8 +34,8 @@ public class Benches {
         a.start();
         List<String> b = readLinesWithBR("db/Vendas_3M.txt");
         List<IVenda> e = b.parallelStream().map(Venda::new)
-                .filter(o -> o.validSale()
-                        && finalProd.exists(o.getCodProd())
+                .filter(o ->
+                        finalProd.exists(o.getCodProd())
                         && finalCli.exists(o.getCodCli()))
                 .collect(Collectors
                         .toList());
