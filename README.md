@@ -1,4 +1,4 @@
-# LI3-SGV-Java
+# LI3-GestVendas-Java
 
 MVC Sale Management (LI3 Assignment)
 
