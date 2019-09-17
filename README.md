@@ -2,6 +2,10 @@
 
 MVC Sale Management (LI3 Assignment)
 
+## Documentation
+
+Click [here](https://htmlpreview.github.io/?https://raw.githubusercontent.com/JoseFilipeFerreira/LI3-GestVendas-Java/blob/master/docs/index.html) to see the documentation.
+
 ## Authors
 
 * [João Teixeira](https://github.com/jtexeira)
